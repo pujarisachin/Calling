@@ -105,7 +105,6 @@ class RealtimeBridgeService:
                                 json.dumps({
                                     "type": "response.create",
                                     "response": {
-                                        "modalities": ["audio"],
                                         "instructions": "Greet the callee warmly and begin the test scenario naturally.",
                                     },
                                 })
@@ -167,6 +166,7 @@ class RealtimeBridgeService:
                 {
                     "type": "session.update",
                     "session": {
+                        "type": "conversation",
                         "modalities": ["audio"],
                         "voice": self.settings.openai_realtime_voice,
                         "input_audio_format": "g711_ulaw",
