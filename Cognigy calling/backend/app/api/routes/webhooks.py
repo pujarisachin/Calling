@@ -95,6 +95,41 @@ def _finalize_analysis_if_needed(db: Session, test_id: str) -> None:
         return
 
     transcript_rows = TranscriptService.get_transcript(db, test_id)
+
+    if not transcript_rows:
+        # No speech was captured — media stream never connected.
+        # Store a diagnostic report instead of wasting an LLM call.
+        no_transcript_criteria = [
+            {"criterion": c, "status": "fail", "notes": "Call ended before any speech was captured. Verify the ngrok tunnel is running and APP_PUBLIC_BASE_URL is set correctly."}
+            for c in (test_case.success_criteria or [])
+        ]
+        empty_quality = {
+            "intent_recognition": "N/A", "response_relevance": "N/A",
+            "context_retention": "N/A", "conversation_flow": "N/A",
+            "error_handling": "N/A", "recovery_from_misunderstanding": "N/A",
+            "task_completion": "N/A",
+        }
+        db.add(
+            AnalysisReport(
+                test_id=test_id,
+                overall_result="Fail",
+                score=0,
+                summary="No speech was captured during this call. The media stream bridge did not connect. Check that the ngrok tunnel is running and the APP_PUBLIC_BASE_URL environment variable points to the active ngrok HTTPS URL.",
+                criteria_evaluation=no_transcript_criteria,
+                quality_assessment=empty_quality,
+                issues=[{"category": "media_stream_not_connected", "description": "Twilio media stream WebSocket did not connect to the backend. The call ended before any audio was bridged.", "severity": "high"}],
+                suggestions=[
+                    "Start ngrok: ngrok http 8000",
+                    "Update APP_PUBLIC_BASE_URL in the .env file with the new ngrok URL",
+                    "Restart the backend container: docker compose restart backend",
+                    "Re-run the test",
+                ],
+                confidence=1.0,
+                raw_response=None,
+            )
+        )
+        return
+
     settings = get_settings()
     analysis_engine = AnalysisEngine(settings)
     analysis_dict = analysis_engine.analyze_conversation(test_case, transcript_rows)
