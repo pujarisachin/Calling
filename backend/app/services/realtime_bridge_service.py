@@ -16,6 +16,47 @@ from app.services.transcript_service import TranscriptService
 
 logger = logging.getLogger(__name__)
 
+# ---------------------------------------------------------------------------
+# Audio transcoding helpers — Python 3.13+ has no audioop, so we implement
+# PCM16 @ 24 kHz  →  G.711 μ-law @ 8 kHz in pure Python.
+# ---------------------------------------------------------------------------
+import base64
+import struct
+
+_ULAW_BIAS = 0x84   # 132
+_ULAW_CLIP = 32635
+_SEG_UEND = (0x3F, 0x7F, 0xFF, 0x1FF, 0x3FF, 0x7FF, 0xFFF, 0x1FFF)
+
+
+def _linear_to_ulaw(sample: int) -> int:
+    """Convert one signed 16-bit PCM sample to an 8-bit μ-law byte."""
+    if sample < 0:
+        sample = _ULAW_BIAS - sample
+        mask = 0x7F
+    else:
+        sample = _ULAW_BIAS + sample
+        mask = 0xFF
+    if sample > _ULAW_CLIP:
+        sample = _ULAW_CLIP
+    seg = 8
+    for i, end in enumerate(_SEG_UEND):
+        if sample <= end:
+            seg = i
+            break
+    if seg >= 8:
+        return 0x7F ^ mask
+    return ((seg << 4) | ((sample >> (seg + 3)) & 0x0F)) ^ mask
+
+
+def _pcm24k_to_ulaw8k(b64_pcm: str) -> str:
+    """Decode base64 PCM16@24kHz, downsample 3:1 to 8kHz, encode to μ-law, return base64."""
+    raw = base64.b64decode(b64_pcm)
+    n = len(raw) // 2
+    samples = struct.unpack_from(f"<{n}h", raw)
+    # Simple 3:1 decimation (24000 / 3 = 8000 Hz) — adequate for speech
+    ulaw = bytes(_linear_to_ulaw(samples[i]) for i in range(0, n, 3))
+    return base64.b64encode(ulaw).decode()
+
 
 @dataclass
 class RealtimeContext:
@@ -91,7 +132,7 @@ class RealtimeBridgeService:
                         event = json.loads(raw)
                         event_type = event.get("type")
 
-                        if event_type == "response.audio.delta":
+                        if event_type == "response.output_audio.delta":
                             pass  # high-volume; handled below
                         elif event_type == "error":
                             logger.error("OpenAI ERROR event: %s", json.dumps(event))
@@ -120,19 +161,21 @@ class RealtimeBridgeService:
                             await openai_ws.send(json.dumps({"type": "response.create"}))
                             greeted = True
                             session_created.set()
-                        elif event_type == "response.audio.delta":
-                            if stream_sid:
+                        elif event_type == "response.output_audio.delta":
+                            delta_b64 = event.get("delta", "")
+                            if stream_sid and delta_b64:
                                 if audio_deltas_sent == 0:
                                     logger.info("First audio delta → sending to Twilio stream_sid=%s", stream_sid)
                                 audio_deltas_sent += 1
+                                payload = _pcm24k_to_ulaw8k(delta_b64)
                                 await twilio_ws.send_text(
                                     json.dumps({
                                         "event": "media",
                                         "streamSid": stream_sid,
-                                        "media": {"payload": event.get("delta", "")},
+                                        "media": {"payload": payload},
                                     })
                                 )
-                            else:
+                            elif not stream_sid:
                                 audio_deltas_dropped += 1
                                 if audio_deltas_dropped == 1:
                                     logger.warning("Dropping audio delta — stream_sid not yet set (will count silently)")
@@ -141,7 +184,7 @@ class RealtimeBridgeService:
                             logger.info("User speech transcribed: %s", transcript_text)
                             if transcript_text and active_context:
                                 self._append_utterance(active_context.test_id, "Target User", transcript_text)
-                        elif event_type == "response.audio_transcript.done":
+                        elif event_type == "response.output_audio_transcript.done":
                             transcript_text = (event.get("transcript") or "").strip()
                             logger.info("AI speech transcribed: %s", transcript_text)
                             if transcript_text and active_context:
