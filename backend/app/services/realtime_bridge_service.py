@@ -103,7 +103,18 @@ class RealtimeBridgeService:
                             except asyncio.TimeoutError:
                                 logger.warning("Timed out waiting for Twilio start, using default context")
                             await self._send_session_update(openai_ws, active_context)
-                            logger.info("Sending greeting response.create")
+                            # Inject a synthetic user turn so the model has context to respond to.
+                            # Some realtime models require an existing conversation item before
+                            # response.create will generate audio.
+                            logger.info("Injecting trigger message then response.create")
+                            await openai_ws.send(json.dumps({
+                                "type": "conversation.item.create",
+                                "item": {
+                                    "type": "message",
+                                    "role": "user",
+                                    "content": [{"type": "input_text", "text": "Hello, please begin."}],
+                                },
+                            }))
                             await openai_ws.send(json.dumps({"type": "response.create"}))
                             greeted = True
                             session_created.set()
@@ -161,6 +172,8 @@ class RealtimeBridgeService:
             if context
             else "You are an AI call tester. Have a short, clear voice conversation and gather details before confirming outcomes."
         )
+        # Keep session config minimal — the enterprise model silently rejects unknown/
+        # unsupported fields (observed: voice, input_audio_transcription with whisper-1).
         await openai_ws.send(
             json.dumps(
                 {
@@ -168,10 +181,8 @@ class RealtimeBridgeService:
                     "session": {
                         "type": "conversation",
                         "modalities": ["audio"],
-                        "voice": self.settings.openai_realtime_voice,
                         "input_audio_format": "g711_ulaw",
                         "output_audio_format": "g711_ulaw",
-                        "input_audio_transcription": {"model": "whisper-1"},
                         "turn_detection": {"type": "server_vad"},
                         "instructions": instructions,
                     },
