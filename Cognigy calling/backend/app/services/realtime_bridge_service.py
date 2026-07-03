@@ -38,7 +38,6 @@ class RealtimeBridgeService:
         openai_url = f"wss://api.openai.com/v1/realtime?model={self.settings.openai_realtime_model}"
         headers = {
             "Authorization": f"Bearer {self.settings.openai_api_key}",
-            "OpenAI-Beta": "realtime=v1",
         }
 
         stream_sid: str | None = None
