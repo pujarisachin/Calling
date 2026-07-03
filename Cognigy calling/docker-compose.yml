@@ -25,7 +25,7 @@ services:
       TWILIO_INLINE_HOLD_SECONDS: ${TWILIO_INLINE_HOLD_SECONDS:-45}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       OPENAI_MODEL: gpt-4.1-mini
-      OPENAI_REALTIME_MODEL: gpt-4o-realtime-preview
+      OPENAI_REALTIME_MODEL: gpt-realtime-2025-08-28
       OPENAI_REALTIME_VOICE: ${OPENAI_REALTIME_VOICE:-alloy}
     volumes:
       - ./backend/voice_test.db:/app/voice_test.db
