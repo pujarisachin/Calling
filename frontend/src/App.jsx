@@ -157,6 +157,20 @@ export default function App() {
           <p>Test ID: {testId}</p>
           <p>Current Call Status: {callStatus}</p>
           <p>The platform is running the scenario and polling results automatically.</p>
+
+          <h3>Live Transcript</h3>
+          {result?.call?.metadata?.transcript_note && <p>{result.call.metadata.transcript_note}</p>}
+          <div className="transcript">
+            {(result?.transcript || []).length === 0 ? (
+              <p>Waiting for live speech...</p>
+            ) : (
+              (result?.transcript || []).map((item, idx) => (
+                <p key={`${idx}-${item.timestamp}`}>
+                  <strong>{item.speaker}:</strong> {item.text}
+                </p>
+              ))
+            )}
+          </div>
         </section>
       )}
 

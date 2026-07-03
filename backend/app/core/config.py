@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     app_env: str = Field(default="development", alias="APP_ENV")
     app_host: str = Field(default="0.0.0.0", alias="APP_HOST")
     app_port: int = Field(default=8000, alias="APP_PORT")
+    app_public_base_url: str | None = Field(default=None, alias="APP_PUBLIC_BASE_URL")
     log_level: str = Field(default="INFO", alias="LOG_LEVEL")
 
     database_url: str = Field(default="sqlite:///./voice_test.db", alias="DATABASE_URL")
@@ -25,6 +26,7 @@ class Settings(BaseSettings):
     openai_api_key: str | None = Field(default=None, alias="OPENAI_API_KEY")
     openai_model: str = Field(default="gpt-4.1-mini", alias="OPENAI_MODEL")
     openai_realtime_model: str = Field(default="gpt-realtime", alias="OPENAI_REALTIME_MODEL")
+    openai_realtime_voice: str = Field(default="alloy", alias="OPENAI_REALTIME_VOICE")
 
 
 @lru_cache

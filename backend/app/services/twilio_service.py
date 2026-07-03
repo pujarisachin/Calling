@@ -40,7 +40,25 @@ class TwilioService:
             return Client(account_sid, auth_token)
         return None
 
-    def start_outbound_call(self, to_phone_number: str) -> OutboundCallResult:
+    def _resolve_answer_url(self, test_id: str) -> str | None:
+        if self.settings.twilio_answer_url:
+            separator = "&" if "?" in self.settings.twilio_answer_url else "?"
+            return f"{self.settings.twilio_answer_url}{separator}test_id={test_id}"
+        if self.settings.app_public_base_url:
+            base = self.settings.app_public_base_url.rstrip("/")
+            return f"{base}/api/webhooks/twilio/answer?test_id={test_id}"
+        return None
+
+    def _resolve_status_callback_url(self, test_id: str) -> str | None:
+        if self.settings.twilio_status_callback_url:
+            separator = "&" if "?" in self.settings.twilio_status_callback_url else "?"
+            return f"{self.settings.twilio_status_callback_url}{separator}test_id={test_id}"
+        if self.settings.app_public_base_url:
+            base = self.settings.app_public_base_url.rstrip("/")
+            return f"{base}/api/webhooks/twilio/status?test_id={test_id}"
+        return None
+
+    def start_outbound_call(self, to_phone_number: str, test_id: str) -> OutboundCallResult:
         client = self._build_client()
         if client is None or not self.settings.twilio_from_number:
             logger.warning("Twilio credentials not configured. Using simulated call mode.")
@@ -55,11 +73,12 @@ class TwilioService:
                 "to": to_phone_number,
                 "from_": self.settings.twilio_from_number,
             }
+            answer_url = self._resolve_answer_url(test_id)
 
             # If public webhook URLs are unavailable (e.g., corp policy blocks tunnels),
             # use inline TwiML so outbound calls still work without ngrok.
-            if self.settings.twilio_answer_url:
-                create_kwargs["url"] = self.settings.twilio_answer_url
+            if answer_url:
+                create_kwargs["url"] = answer_url
             else:
                 hold_seconds = max(5, min(self.settings.twilio_inline_hold_seconds, 600))
                 reminder_count = max(0, hold_seconds // 15)
@@ -80,8 +99,9 @@ class TwilioService:
                     "</Response>"
                 )
 
-            if self.settings.twilio_status_callback_url:
-                create_kwargs["status_callback"] = self.settings.twilio_status_callback_url
+            status_callback_url = self._resolve_status_callback_url(test_id)
+            if status_callback_url:
+                create_kwargs["status_callback"] = status_callback_url
                 create_kwargs["status_callback_event"] = ["initiated", "ringing", "answered", "completed"]
                 create_kwargs["status_callback_method"] = "POST"
 

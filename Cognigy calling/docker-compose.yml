@@ -10,6 +10,7 @@ services:
       APP_ENV: production
       APP_HOST: 0.0.0.0
       APP_PORT: 8000
+      APP_PUBLIC_BASE_URL: ${APP_PUBLIC_BASE_URL:-}
       LOG_LEVEL: INFO
       DATABASE_URL: sqlite:///./voice_test.db
       TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}
@@ -23,6 +24,7 @@ services:
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       OPENAI_MODEL: gpt-4.1-mini
       OPENAI_REALTIME_MODEL: gpt-realtime
+      OPENAI_REALTIME_VOICE: ${OPENAI_REALTIME_VOICE:-alloy}
     volumes:
       - ./backend/voice_test.db:/app/voice_test.db
     restart: unless-stopped

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import datetime
+
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -28,3 +30,15 @@ class TranscriptService:
             .order_by(TranscriptUtterance.timestamp.asc())
         )
         return list(db.scalars(stmt).all())
+
+    @staticmethod
+    def append_utterance(db: Session, test_id: str, speaker: str, text: str) -> None:
+        db.add(
+            TranscriptUtterance(
+                test_id=test_id,
+                speaker=speaker,
+                text=text,
+                timestamp=datetime.utcnow(),
+            )
+        )
+        db.commit()
