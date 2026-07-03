@@ -46,6 +46,8 @@ class RealtimeBridgeService:
         greeted = False
         session_created = asyncio.Event()
         context_resolved = asyncio.Event()
+        audio_deltas_sent = 0
+        audio_deltas_dropped = 0
 
         try:
             logger.info("Connecting to OpenAI Realtime: %s", openai_url)
@@ -83,7 +85,7 @@ class RealtimeBridgeService:
                             break
 
                 async def openai_to_twilio() -> None:
-                    nonlocal greeted
+                    nonlocal greeted, audio_deltas_sent, audio_deltas_dropped
                     while True:
                         raw = await openai_ws.recv()
                         event = json.loads(raw)
@@ -120,6 +122,9 @@ class RealtimeBridgeService:
                             session_created.set()
                         elif event_type == "response.audio.delta":
                             if stream_sid:
+                                if audio_deltas_sent == 0:
+                                    logger.info("First audio delta → sending to Twilio stream_sid=%s", stream_sid)
+                                audio_deltas_sent += 1
                                 await twilio_ws.send_text(
                                     json.dumps({
                                         "event": "media",
@@ -128,7 +133,9 @@ class RealtimeBridgeService:
                                     })
                                 )
                             else:
-                                logger.warning("Dropping audio delta — stream_sid not yet set")
+                                audio_deltas_dropped += 1
+                                if audio_deltas_dropped == 1:
+                                    logger.warning("Dropping audio delta — stream_sid not yet set (will count silently)")
                         elif event_type == "conversation.item.input_audio_transcription.completed":
                             transcript_text = (event.get("transcript") or "").strip()
                             logger.info("User speech transcribed: %s", transcript_text)
@@ -139,6 +146,13 @@ class RealtimeBridgeService:
                             logger.info("AI speech transcribed: %s", transcript_text)
                             if transcript_text and active_context:
                                 self._append_utterance(active_context.test_id, "AI Tester", transcript_text)
+                        elif event_type == "response.done":
+                            logger.info(
+                                "Response done — audio deltas sent=%d dropped=%d stream_sid=%s",
+                                audio_deltas_sent, audio_deltas_dropped, stream_sid,
+                            )
+                            audio_deltas_sent = 0
+                            audio_deltas_dropped = 0
                         elif event_type == "response.output_item.done":
                             # Try to get text from output items if audio transcript not available
                             item = event.get("item", {})
