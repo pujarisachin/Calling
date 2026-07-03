@@ -46,7 +46,9 @@ class RealtimeBridgeService:
         greeted = False
 
         try:
+            logger.info("Connecting to OpenAI Realtime: %s", openai_url)
             async with websockets.connect(openai_url, additional_headers=headers, max_size=None) as openai_ws:
+                logger.info("OpenAI Realtime WebSocket connected")
                 await self._send_session_update(openai_ws, None)
 
                 async def twilio_to_openai() -> None:
@@ -55,6 +57,7 @@ class RealtimeBridgeService:
                         message = await twilio_ws.receive_text()
                         event = json.loads(message)
                         event_type = event.get("event")
+                        logger.debug("Twilio event: %s", event_type)
 
                         if event_type == "start":
                             start_payload = event.get("start", {})
@@ -62,11 +65,13 @@ class RealtimeBridgeService:
                             call_sid = start_payload.get("callSid")
                             custom = start_payload.get("customParameters") or {}
                             test_id = custom.get("test_id")
+                            logger.info("Twilio stream started: stream_sid=%s call_sid=%s test_id=%s", stream_sid, call_sid, test_id)
 
                             active_context = self._resolve_context(call_sid=call_sid, test_id=test_id)
                             await self._send_session_update(openai_ws, active_context)
 
                             if not greeted:
+                                logger.info("Sending greeting response.create to OpenAI")
                                 await openai_ws.send(
                                     json.dumps(
                                         {
@@ -92,6 +97,7 @@ class RealtimeBridgeService:
                                     )
                                 )
                         elif event_type == "stop":
+                            logger.info("Twilio stream stopped")
                             break
 
                 async def openai_to_twilio() -> None:
@@ -99,6 +105,11 @@ class RealtimeBridgeService:
                         raw = await openai_ws.recv()
                         event = json.loads(raw)
                         event_type = event.get("type")
+
+                        if event_type not in ("response.audio.delta", "input_audio_buffer.speech_started", "input_audio_buffer.speech_stopped"):
+                            logger.info("OpenAI event: %s", event_type)
+                            if event.get("error"):
+                                logger.error("OpenAI error event: %s", event)
 
                         if event_type == "response.audio.delta" and stream_sid:
                             await twilio_ws.send_text(
@@ -112,14 +123,17 @@ class RealtimeBridgeService:
                             )
                         elif event_type == "conversation.item.input_audio_transcription.completed":
                             transcript_text = (event.get("transcript") or "").strip()
+                            logger.info("User speech transcribed: %s", transcript_text)
                             if transcript_text and active_context:
                                 self._append_utterance(active_context.test_id, "Target User", transcript_text)
                         elif event_type == "response.audio_transcript.done":
                             transcript_text = (event.get("transcript") or "").strip()
+                            logger.info("AI speech transcribed: %s", transcript_text)
                             if transcript_text and active_context:
                                 self._append_utterance(active_context.test_id, "AI Tester", transcript_text)
                         elif event_type == "response.output_text.done":
                             transcript_text = (event.get("text") or "").strip()
+                            logger.info("AI text output: %s", transcript_text)
                             if transcript_text and active_context:
                                 self._append_utterance(active_context.test_id, "AI Tester", transcript_text)
 
@@ -155,7 +169,7 @@ class RealtimeBridgeService:
                         "voice": self.settings.openai_realtime_voice,
                         "input_audio_format": "g711_ulaw",
                         "output_audio_format": "g711_ulaw",
-                        "input_audio_transcription": {"model": "whisper-1"},
+                        "input_audio_transcription": {"model": "gpt-4o-mini-transcribe"},
                         "turn_detection": {"type": "server_vad"},
                         "instructions": instructions,
                     },

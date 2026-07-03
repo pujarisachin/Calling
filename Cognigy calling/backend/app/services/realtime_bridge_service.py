@@ -155,7 +155,7 @@ class RealtimeBridgeService:
                         "voice": self.settings.openai_realtime_voice,
                         "input_audio_format": "g711_ulaw",
                         "output_audio_format": "g711_ulaw",
-                        "input_audio_transcription": {"model": "whisper-1"},
+                        "input_audio_transcription": {"model": "gpt-4o-mini-transcribe"},
                         "turn_detection": {"type": "server_vad"},
                         "instructions": instructions,
                     },
