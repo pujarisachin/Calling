@@ -124,11 +124,22 @@ class RealtimeBridgeService:
                             if transcript_text and active_context:
                                 self._append_utterance(active_context.test_id, "AI Tester", transcript_text)
 
-                await asyncio.gather(twilio_to_openai(), openai_to_twilio())
+                twilio_task = asyncio.create_task(twilio_to_openai())
+                openai_task = asyncio.create_task(openai_to_twilio())
+                done, pending = await asyncio.wait(
+                    [twilio_task, openai_task],
+                    return_when=asyncio.FIRST_COMPLETED,
+                )
+                for task in pending:
+                    task.cancel()
+                await asyncio.gather(*pending, return_exceptions=True)
         except Exception as exc:  # noqa: BLE001
             logger.exception("Realtime media bridge failed: %s", exc)
         finally:
-            await twilio_ws.close()
+            try:
+                await twilio_ws.close()
+            except Exception:
+                pass
 
     async def _send_session_update(self, openai_ws, context: RealtimeContext | None) -> None:
         instructions = (
@@ -145,6 +156,7 @@ class RealtimeBridgeService:
                         "voice": self.settings.openai_realtime_voice,
                         "input_audio_format": "g711_ulaw",
                         "output_audio_format": "g711_ulaw",
+                        "input_audio_transcription": {"model": "whisper-1"},
                         "turn_detection": {"type": "server_vad"},
                         "instructions": instructions,
                     },
