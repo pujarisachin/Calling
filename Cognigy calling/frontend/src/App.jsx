@@ -207,12 +207,19 @@ export default function App() {
               </ul>
 
               <h3>Transcript</h3>
+              {result.call?.metadata?.transcript_note && (
+                <p>{result.call.metadata.transcript_note}</p>
+              )}
               <div className="transcript">
-                {(result.transcript || []).map((item, idx) => (
-                  <p key={`${idx}-${item.timestamp}`}>
-                    <strong>{item.speaker}:</strong> {item.text}
-                  </p>
-                ))}
+                {(result.transcript || []).length === 0 ? (
+                  <p>No transcript available for this run.</p>
+                ) : (
+                  (result.transcript || []).map((item, idx) => (
+                    <p key={`${idx}-${item.timestamp}`}>
+                      <strong>{item.speaker}:</strong> {item.text}
+                    </p>
+                  ))
+                )}
               </div>
             </>
           ) : (

@@ -44,12 +44,22 @@ class CallOrchestrator:
             call_session.metadata_json = {
                 "simulated": call_result.simulated,
                 "twilio_initial_status": call_result.status,
+                "conversation_mode": "simulated" if call_result.simulated else "telephony_no_bridge",
             }
             db.commit()
 
-            transcript_items = self.conversation_manager.execute_test_conversation(test_case)
-            self.transcript_service.save_transcript(db, test_id, transcript_items)
-            transcript_rows = self.transcript_service.get_transcript(db, test_id)
+            transcript_rows = []
+            if call_result.simulated:
+                transcript_items = self.conversation_manager.execute_test_conversation(test_case)
+                self.transcript_service.save_transcript(db, test_id, transcript_items)
+                transcript_rows = self.transcript_service.get_transcript(db, test_id)
+            else:
+                call_session.metadata_json = {
+                    **(call_session.metadata_json or {}),
+                    "transcript_capture": "not_available",
+                    "transcript_note": "No live call transcript is captured in telephony mode without a media bridge.",
+                }
+                db.commit()
 
             analysis_dict = self.analysis_engine.analyze_conversation(test_case, transcript_rows)
             analysis = ReportGenerator.normalize_analysis(analysis_dict)
