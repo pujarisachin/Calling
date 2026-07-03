@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+*.log
+.env
+.env.local
+node_modules/
+dist/
+.DS_Store
+Thumbs.db
+voice_test.db
