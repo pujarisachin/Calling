@@ -19,33 +19,45 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 # Audio transcoding helpers — Python 3.13+ has no audioop, so we implement
 # PCM16 @ 24 kHz  →  G.711 μ-law @ 8 kHz in pure Python.
+# Algorithm matches CPython's audioop.lin2ulaw exactly.
 # ---------------------------------------------------------------------------
 import base64
 import struct
 
-_ULAW_BIAS = 0x84   # 132
-_ULAW_CLIP = 32635
-_SEG_UEND = (0x3F, 0x7F, 0xFF, 0x1FF, 0x3FF, 0x7FF, 0xFFF, 0x1FFF)
+_ULAW_EXP_LUT = (
+    0,0,1,1,2,2,2,2,3,3,3,3,3,3,3,3,
+    4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,
+    5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
+    5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
+    6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
+    6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
+    6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
+    6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
+    7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+    7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+    7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+    7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+    7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+    7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+    7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+    7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+)
 
 
 def _linear_to_ulaw(sample: int) -> int:
-    """Convert one signed 16-bit PCM sample to an 8-bit μ-law byte."""
-    if sample < 0:
-        sample = _ULAW_BIAS - sample
-        mask = 0x7F
+    """Convert a signed 16-bit PCM sample to 8-bit μ-law (G.711).
+    Matches CPython audioop.lin2ulaw exactly."""
+    if sample >= 0:
+        sign = 0
     else:
-        sample = _ULAW_BIAS + sample
-        mask = 0xFF
-    if sample > _ULAW_CLIP:
-        sample = _ULAW_CLIP
-    seg = 8
-    for i, end in enumerate(_SEG_UEND):
-        if sample <= end:
-            seg = i
-            break
-    if seg >= 8:
-        return 0x7F ^ mask
-    return ((seg << 4) | ((sample >> (seg + 3)) & 0x0F)) ^ mask
+        sign = 0x80
+        sample = -sample - 1
+    sample += 0x84  # add bias
+    if sample > 0x7FFF:
+        sample = 0x7FFF
+    exponent = _ULAW_EXP_LUT[(sample >> 7) & 0xFF]
+    mantissa = (sample >> (exponent + 3)) & 0x0F
+    return (~(sign | (exponent << 4) | mantissa)) & 0xFF
 
 
 def _pcm24k_to_ulaw8k(b64_pcm: str) -> str:
