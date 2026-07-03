@@ -24,9 +24,21 @@ class TwilioService:
         self.settings = settings
 
     def _build_client(self) -> Client | None:
-        if not self.settings.twilio_account_sid or not self.settings.twilio_auth_token:
-            return None
-        return Client(self.settings.twilio_account_sid, self.settings.twilio_auth_token)
+        account_sid = self.settings.twilio_account_sid
+        auth_token = self.settings.twilio_auth_token
+        api_key_sid = self.settings.twilio_api_key_sid
+        api_key_secret = self.settings.twilio_api_key_secret
+
+        if account_sid and not account_sid.startswith("AC"):
+            logger.warning("TWILIO_ACCOUNT_SID does not start with 'AC'.")
+        if api_key_sid and not api_key_sid.startswith("SK"):
+            logger.warning("TWILIO_API_KEY_SID does not start with 'SK'.")
+
+        if account_sid and api_key_sid and api_key_secret:
+            return Client(api_key_sid, api_key_secret, account_sid)
+        if account_sid and auth_token:
+            return Client(account_sid, auth_token)
+        return None
 
     def start_outbound_call(self, to_phone_number: str) -> OutboundCallResult:
         client = self._build_client()
@@ -81,7 +93,14 @@ class TwilioService:
             )
         except TwilioException as exc:
             logger.exception("Twilio outbound call failed: %s", exc)
-            raise RuntimeError(f"Twilio call failed: {exc}") from exc
+            message = f"Twilio call failed: {exc}"
+            if "HTTP 401" in str(exc) or "Authentication Error" in str(exc):
+                message += (
+                    " Verify Twilio credentials: use either "
+                    "TWILIO_ACCOUNT_SID + TWILIO_AUTH_TOKEN or "
+                    "TWILIO_ACCOUNT_SID + TWILIO_API_KEY_SID + TWILIO_API_KEY_SECRET."
+                )
+            raise RuntimeError(message) from exc
 
     def get_call_status(self, provider_call_sid: str) -> dict[str, Any] | None:
         client = self._build_client()

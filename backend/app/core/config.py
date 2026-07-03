@@ -15,6 +15,8 @@ class Settings(BaseSettings):
 
     twilio_account_sid: str | None = Field(default=None, alias="TWILIO_ACCOUNT_SID")
     twilio_auth_token: str | None = Field(default=None, alias="TWILIO_AUTH_TOKEN")
+    twilio_api_key_sid: str | None = Field(default=None, alias="TWILIO_API_KEY_SID")
+    twilio_api_key_secret: str | None = Field(default=None, alias="TWILIO_API_KEY_SECRET")
     twilio_from_number: str | None = Field(default=None, alias="TWILIO_FROM_NUMBER")
     twilio_status_callback_url: str | None = Field(default=None, alias="TWILIO_STATUS_CALLBACK_URL")
     twilio_answer_url: str | None = Field(default=None, alias="TWILIO_ANSWER_URL")
