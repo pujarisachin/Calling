@@ -89,10 +89,12 @@ class RealtimeBridgeService:
                         event = json.loads(raw)
                         event_type = event.get("type")
 
-                        if event_type not in ("response.audio.delta",):
-                            logger.info("OpenAI event: %s", event_type)
-                            if event.get("error") or event_type == "error":
-                                logger.error("OpenAI error: %s", event)
+                        if event_type == "response.audio.delta":
+                            pass  # high-volume; handled below
+                        elif event_type == "error":
+                            logger.error("OpenAI ERROR event: %s", json.dumps(event))
+                        else:
+                            logger.info("OpenAI event: %s | %s", event_type, json.dumps(event))
 
                         if event_type == "session.created":
                             logger.info("Session created — waiting for Twilio start context")
@@ -102,24 +104,20 @@ class RealtimeBridgeService:
                                 logger.warning("Timed out waiting for Twilio start, using default context")
                             await self._send_session_update(openai_ws, active_context)
                             logger.info("Sending greeting response.create")
-                            await openai_ws.send(
-                                json.dumps({
-                                    "type": "response.create",
-                                    "response": {
-                                        "instructions": "Greet the callee warmly and begin the test scenario naturally.",
-                                    },
-                                })
-                            )
+                            await openai_ws.send(json.dumps({"type": "response.create"}))
                             greeted = True
                             session_created.set()
-                        elif event_type == "response.audio.delta" and stream_sid:
-                            await twilio_ws.send_text(
-                                json.dumps({
-                                    "event": "media",
-                                    "streamSid": stream_sid,
-                                    "media": {"payload": event.get("delta", "")},
-                                })
-                            )
+                        elif event_type == "response.audio.delta":
+                            if stream_sid:
+                                await twilio_ws.send_text(
+                                    json.dumps({
+                                        "event": "media",
+                                        "streamSid": stream_sid,
+                                        "media": {"payload": event.get("delta", "")},
+                                    })
+                                )
+                            else:
+                                logger.warning("Dropping audio delta — stream_sid not yet set")
                         elif event_type == "conversation.item.input_audio_transcription.completed":
                             transcript_text = (event.get("transcript") or "").strip()
                             logger.info("User speech transcribed: %s", transcript_text)
@@ -173,6 +171,7 @@ class RealtimeBridgeService:
                         "voice": self.settings.openai_realtime_voice,
                         "input_audio_format": "g711_ulaw",
                         "output_audio_format": "g711_ulaw",
+                        "input_audio_transcription": {"model": "whisper-1"},
                         "turn_detection": {"type": "server_vad"},
                         "instructions": instructions,
                     },
