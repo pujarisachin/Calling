@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     twilio_status_callback_url: str | None = Field(default=None, alias="TWILIO_STATUS_CALLBACK_URL")
     twilio_answer_url: str | None = Field(default=None, alias="TWILIO_ANSWER_URL")
     twilio_inline_hold_seconds: int = Field(default=45, alias="TWILIO_INLINE_HOLD_SECONDS")
+    max_call_duration_seconds: int = Field(default=120, alias="MAX_CALL_DURATION_SECONDS")
 
     openai_api_key: str | None = Field(default=None, alias="OPENAI_API_KEY")
     openai_model: str = Field(default="gpt-4.1-mini", alias="OPENAI_MODEL")

@@ -122,6 +122,16 @@ class TwilioService:
                 )
             raise RuntimeError(message) from exc
 
+    def hangup_call(self, provider_call_sid: str) -> None:
+        client = self._build_client()
+        if client is None or provider_call_sid == "SIMULATED_CALL_SID":
+            return
+
+        try:
+            client.calls(provider_call_sid).update(status="completed")
+        except TwilioException as exc:
+            logger.warning("Failed to hang up Twilio call %s: %s", provider_call_sid, exc)
+
     def get_call_status(self, provider_call_sid: str) -> dict[str, Any] | None:
         client = self._build_client()
         if client is None or provider_call_sid == "SIMULATED_CALL_SID":

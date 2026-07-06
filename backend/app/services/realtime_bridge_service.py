@@ -13,6 +13,7 @@ from app.core.config import Settings
 from app.db.database import SessionLocal
 from app.db.models import CallSession, TestCase
 from app.services.transcript_service import TranscriptService
+from app.services.twilio_service import TwilioService
 
 logger = logging.getLogger(__name__)
 
@@ -83,6 +84,15 @@ class RealtimeBridgeService:
                         elif event_type == "stop":
                             logger.info("Twilio stream stopped")
                             break
+
+                async def enforce_call_time_limit() -> None:
+                    await asyncio.sleep(self.settings.max_call_duration_seconds)
+                    logger.warning(
+                        "Call exceeded max duration of %s seconds — hanging up call_sid=%s",
+                        self.settings.max_call_duration_seconds, call_sid,
+                    )
+                    if call_sid:
+                        await asyncio.to_thread(TwilioService(self.settings).hangup_call, call_sid)
 
                 async def openai_to_twilio() -> None:
                     nonlocal greeted, audio_deltas_sent, audio_deltas_dropped
@@ -172,8 +182,9 @@ class RealtimeBridgeService:
 
                 twilio_task = asyncio.create_task(twilio_to_openai())
                 openai_task = asyncio.create_task(openai_to_twilio())
+                watchdog_task = asyncio.create_task(enforce_call_time_limit())
                 done, pending = await asyncio.wait(
-                    [twilio_task, openai_task],
+                    [twilio_task, openai_task, watchdog_task],
                     return_when=asyncio.FIRST_COMPLETED,
                 )
                 for task in pending:
