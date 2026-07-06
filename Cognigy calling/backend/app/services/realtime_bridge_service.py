@@ -16,59 +16,6 @@ from app.services.transcript_service import TranscriptService
 
 logger = logging.getLogger(__name__)
 
-# ---------------------------------------------------------------------------
-# Audio transcoding helpers — Python 3.13+ has no audioop, so we implement
-# PCM16 @ 24 kHz  →  G.711 μ-law @ 8 kHz in pure Python.
-# Algorithm matches CPython's audioop.lin2ulaw exactly.
-# ---------------------------------------------------------------------------
-import base64
-import struct
-
-_ULAW_EXP_LUT = (
-    0,0,1,1,2,2,2,2,3,3,3,3,3,3,3,3,
-    4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,
-    5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
-    5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
-    6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
-    6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
-    6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
-    6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
-    7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
-    7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
-    7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
-    7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
-    7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
-    7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
-    7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
-    7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
-)
-
-
-def _linear_to_ulaw(sample: int) -> int:
-    """Convert a signed 16-bit PCM sample to 8-bit μ-law (G.711).
-    Matches CPython audioop.lin2ulaw exactly."""
-    if sample >= 0:
-        sign = 0
-    else:
-        sign = 0x80
-        sample = -sample - 1
-    sample += 0x84  # add bias
-    if sample > 0x7FFF:
-        sample = 0x7FFF
-    exponent = _ULAW_EXP_LUT[(sample >> 7) & 0xFF]
-    mantissa = (sample >> (exponent + 3)) & 0x0F
-    return (~(sign | (exponent << 4) | mantissa)) & 0xFF
-
-
-def _pcm24k_to_ulaw8k(b64_pcm: str) -> str:
-    """Decode base64 PCM16@24kHz, downsample 3:1 to 8kHz, encode to μ-law, return base64."""
-    raw = base64.b64decode(b64_pcm)
-    n = len(raw) // 2
-    samples = struct.unpack_from(f"<{n}h", raw)
-    # Simple 3:1 decimation (24000 / 3 = 8000 Hz) — adequate for speech
-    ulaw = bytes(_linear_to_ulaw(samples[i]) for i in range(0, n, 3))
-    return base64.b64encode(ulaw).decode()
-
 
 @dataclass
 class RealtimeContext:
@@ -179,7 +126,7 @@ class RealtimeBridgeService:
                                 if audio_deltas_sent == 0:
                                     logger.info("First audio delta → sending to Twilio stream_sid=%s", stream_sid)
                                 audio_deltas_sent += 1
-                                payload = _pcm24k_to_ulaw8k(delta_b64)
+                                payload = delta_b64
                                 await twilio_ws.send_text(
                                     json.dumps({
                                         "event": "media",
@@ -244,19 +191,25 @@ class RealtimeBridgeService:
             if context
             else "You are an AI call tester. Have a short, clear voice conversation and gather details before confirming outcomes."
         )
-        # Keep session config minimal — the enterprise model silently rejects unknown/
-        # unsupported fields (observed: voice, input_audio_transcription with whisper-1).
+        # gpt-realtime-* models use the newer session schema: session.type must be
+        # "realtime" (not "conversation"), and audio config is nested under
+        # session.audio.{input,output} rather than top-level fields.
         await openai_ws.send(
             json.dumps(
                 {
                     "type": "session.update",
                     "session": {
-                        "type": "conversation",
-                        "modalities": ["audio"],
-                        "input_audio_format": "g711_ulaw",
-                        "output_audio_format": "g711_ulaw",
-                        "turn_detection": {"type": "server_vad"},
+                        "type": "realtime",
                         "instructions": instructions,
+                        "audio": {
+                            "input": {
+                                "format": {"type": "audio/pcmu"},
+                                "turn_detection": {"type": "server_vad"},
+                            },
+                            "output": {
+                                "format": {"type": "audio/pcmu"},
+                            },
+                        },
                     },
                 }
             )
