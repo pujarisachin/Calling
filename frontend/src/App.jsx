@@ -8,6 +8,8 @@ const defaultForm = {
   expected_conversation_flow: "",
   success_criteria: "",
   additional_instructions: "",
+  test_data: "",
+  persona_instructions: "",
 };
 
 function parseCriteria(raw) {
@@ -141,6 +143,28 @@ export default function App() {
                 value={form.additional_instructions}
                 onChange={onChange}
                 rows={3}
+              />
+            </label>
+
+            <label>
+              Test Data (Optional)
+              <textarea
+                name="test_data"
+                value={form.test_data}
+                onChange={onChange}
+                rows={3}
+                placeholder={"Specific values the AI caller should give if asked, e.g.\nDOB: 15th March 1990\nPhone number: 9876543210\nAccount number: 1234567890"}
+              />
+            </label>
+
+            <label>
+              Caller Behavior (Optional)
+              <textarea
+                name="persona_instructions"
+                value={form.persona_instructions}
+                onChange={onChange}
+                rows={3}
+                placeholder={"How the AI caller should behave, e.g.\nStay silent after the greeting and just observe what the bot says.\nWhen asked for DOB, say it as \"15 March 1990\" not \"03/15/1990\"."}
               />
             </label>
 

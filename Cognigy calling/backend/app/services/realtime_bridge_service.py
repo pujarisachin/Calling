@@ -107,14 +107,16 @@ class RealtimeBridgeService:
                             await self._send_session_update(openai_ws, active_context)
                             # Inject a synthetic user turn so the model has context to respond to.
                             # Some realtime models require an existing conversation item before
-                            # response.create will generate audio.
+                            # response.create will generate audio. Keep it to a bare greeting so
+                            # the model doesn't launch into a scripted monologue — it should say
+                            # hello and then let the called bot lead the conversation.
                             logger.info("Injecting trigger message then response.create")
                             await openai_ws.send(json.dumps({
                                 "type": "conversation.item.create",
                                 "item": {
                                     "type": "message",
                                     "role": "user",
-                                    "content": [{"type": "input_text", "text": "Hello, please begin."}],
+                                    "content": [{"type": "input_text", "text": "(The call has just connected. Say only a brief \"Hello?\" and then stop talking and wait for the other party to speak.)"}],
                                 },
                             }))
                             await openai_ws.send(json.dumps({"type": "response.create"}))
@@ -189,7 +191,10 @@ class RealtimeBridgeService:
         instructions = (
             context.instructions
             if context
-            else "You are an AI call tester. Have a short, clear voice conversation and gather details before confirming outcomes."
+            else (
+                "You are a real customer calling a company's automated voice assistant. Never say you are "
+                "an AI or a tester. Say a brief hello, then let the assistant lead and respond naturally."
+            )
         )
         # gpt-realtime-* models use the newer session schema: session.type must be
         # "realtime" (not "conversation"), and audio config is nested under
@@ -231,11 +236,20 @@ class RealtimeBridgeService:
                 return None
 
             instructions = (
-                "You are a live AI tester on a phone call. Keep responses concise and natural. "
-                f"Scenario: {test_case.scenario}. "
-                f"Expected flow: {test_case.expected_flow or 'Not provided'}. "
-                f"Success criteria: {', '.join(test_case.success_criteria)}. "
-                f"Additional instructions: {test_case.additional_instructions or 'None'}."
+                "You are a real customer calling a company's automated voice assistant on the phone. "
+                "You are NOT a tester, an AI, or a demo — never say you are an AI, testing, or evaluating "
+                "anything, even if asked directly; stay in character as a genuine caller. "
+                "Speak naturally and concisely, like a real person on a phone call. "
+                "You called this number, so let the assistant lead: after your initial greeting, wait for it "
+                "to speak first and respond to what it actually says rather than following a fixed script. "
+                f"Your goal for this call: {test_case.scenario}. "
+                f"Expected conversation flow: {test_case.expected_flow or 'Not provided — improvise naturally toward your goal.'} "
+                f"You will consider the call successful if: {', '.join(test_case.success_criteria)}. "
+                f"Additional instructions: {test_case.additional_instructions or 'None'}. "
+                f"Specific test data to use when asked (e.g. name, DOB, phone/account number) — use exactly as given: "
+                f"{test_case.test_data or 'None provided — improvise plausible values if asked.'} "
+                f"How you should behave as the caller (tone, pacing, whether to stay silent, special phrasing "
+                f"for certain answers, etc.): {test_case.persona_instructions or 'Behave like a cooperative, ordinary caller.'}"
             )
             return RealtimeContext(test_id=test_case.id, instructions=instructions)
 

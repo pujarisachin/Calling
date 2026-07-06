@@ -21,6 +21,8 @@ class TestCase(Base):
     expected_flow: Mapped[str | None] = mapped_column(Text, nullable=True)
     success_criteria: Mapped[list[str]] = mapped_column(JSON, nullable=False)
     additional_instructions: Mapped[str | None] = mapped_column(Text, nullable=True)
+    test_data: Mapped[str | None] = mapped_column(Text, nullable=True)
+    persona_instructions: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
 
 

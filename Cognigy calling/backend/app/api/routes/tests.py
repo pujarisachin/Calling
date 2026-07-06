@@ -43,6 +43,8 @@ def create_test(
         expected_flow=payload.expected_conversation_flow,
         success_criteria=payload.success_criteria,
         additional_instructions=payload.additional_instructions,
+        test_data=payload.test_data,
+        persona_instructions=payload.persona_instructions,
     )
 
     background_tasks.add_task(_run_test_job, test_case.id)
@@ -86,6 +88,8 @@ def get_test_result(test_id: str, db: Session = Depends(get_db)) -> TestResultRe
         expected_flow=test_case.expected_flow,
         success_criteria=test_case.success_criteria,
         additional_instructions=test_case.additional_instructions,
+        test_data=test_case.test_data,
+        persona_instructions=test_case.persona_instructions,
         created_at=test_case.created_at,
         call=CallInfoResponse(
             status=call_session.status,

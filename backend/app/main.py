@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import inspect, text
 
 from app.api.routes.tests import router as tests_router
 from app.api.routes.webhooks import router as webhooks_router
@@ -22,9 +23,24 @@ app.add_middleware(
 )
 
 
+def _add_missing_columns() -> None:
+    # We use create_all (no migration tool), which never alters existing tables —
+    # so columns added to models.py after a DB already exists must be patched in here.
+    inspector = inspect(engine)
+    if "test_cases" not in inspector.get_table_names():
+        return
+    existing_columns = {col["name"] for col in inspector.get_columns("test_cases")}
+    new_columns = {"test_data": "TEXT", "persona_instructions": "TEXT"}
+    with engine.begin() as connection:
+        for column_name, column_type in new_columns.items():
+            if column_name not in existing_columns:
+                connection.execute(text(f"ALTER TABLE test_cases ADD COLUMN {column_name} {column_type}"))
+
+
 @app.on_event("startup")
 def on_startup() -> None:
     Base.metadata.create_all(bind=engine)
+    _add_missing_columns()
 
 
 @app.get("/health")

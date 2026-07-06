@@ -11,6 +11,8 @@ class CreateTestRequest(BaseModel):
     expected_conversation_flow: str | None = None
     success_criteria: list[str] = Field(min_length=1)
     additional_instructions: str | None = None
+    test_data: str | None = None
+    persona_instructions: str | None = None
 
 
 class CriteriaEvaluation(BaseModel):
@@ -73,6 +75,8 @@ class TestResultResponse(BaseModel):
     expected_flow: str | None
     success_criteria: list[str]
     additional_instructions: str | None
+    test_data: str | None
+    persona_instructions: str | None
     created_at: datetime
     call: CallInfoResponse | None
     transcript: list[TranscriptUtteranceResponse]

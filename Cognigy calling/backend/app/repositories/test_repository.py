@@ -16,6 +16,8 @@ class TestRepository:
         expected_flow: str | None,
         success_criteria: list[str],
         additional_instructions: str | None,
+        test_data: str | None = None,
+        persona_instructions: str | None = None,
     ) -> TestCase:
         test_case = TestCase(
             name=name,
@@ -24,6 +26,8 @@ class TestRepository:
             expected_flow=expected_flow,
             success_criteria=success_criteria,
             additional_instructions=additional_instructions,
+            test_data=test_data,
+            persona_instructions=persona_instructions,
         )
         db.add(test_case)
         db.flush()
