@@ -18,6 +18,7 @@ class TestRepository:
         additional_instructions: str | None,
         test_data: str | None = None,
         persona_instructions: str | None = None,
+        enable_recording: bool = False,
     ) -> TestCase:
         test_case = TestCase(
             name=name,
@@ -28,6 +29,7 @@ class TestRepository:
             additional_instructions=additional_instructions,
             test_data=test_data,
             persona_instructions=persona_instructions,
+            enable_recording=enable_recording,
         )
         db.add(test_case)
         db.flush()

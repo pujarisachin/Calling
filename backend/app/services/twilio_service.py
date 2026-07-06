@@ -58,7 +58,7 @@ class TwilioService:
             return f"{base}/api/webhooks/twilio/status?test_id={test_id}"
         return None
 
-    def start_outbound_call(self, to_phone_number: str, test_id: str) -> OutboundCallResult:
+    def start_outbound_call(self, to_phone_number: str, test_id: str, record: bool = False) -> OutboundCallResult:
         client = self._build_client()
         if client is None or not self.settings.twilio_from_number:
             logger.warning("Twilio credentials not configured. Using simulated call mode.")
@@ -104,6 +104,9 @@ class TwilioService:
                 create_kwargs["status_callback"] = status_callback_url
                 create_kwargs["status_callback_event"] = ["initiated", "ringing", "answered", "completed"]
                 create_kwargs["status_callback_method"] = "POST"
+
+            if record:
+                create_kwargs["record"] = True
 
             call = client.calls.create(**create_kwargs)
             return OutboundCallResult(

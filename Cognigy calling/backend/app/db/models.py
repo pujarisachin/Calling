@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from uuid import uuid4
 
-from sqlalchemy import DateTime, Float, ForeignKey, Integer, JSON, String, Text
+from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, JSON, String, Text
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
@@ -23,6 +23,7 @@ class TestCase(Base):
     additional_instructions: Mapped[str | None] = mapped_column(Text, nullable=True)
     test_data: Mapped[str | None] = mapped_column(Text, nullable=True)
     persona_instructions: Mapped[str | None] = mapped_column(Text, nullable=True)
+    enable_recording: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
 
 

@@ -45,6 +45,7 @@ def create_test(
         additional_instructions=payload.additional_instructions,
         test_data=payload.test_data,
         persona_instructions=payload.persona_instructions,
+        enable_recording=payload.enable_recording,
     )
 
     background_tasks.add_task(_run_test_job, test_case.id)
@@ -105,6 +106,7 @@ def get_test_result(test_id: str, db: Session = Depends(get_db)) -> TestResultRe
         additional_instructions=test_case.additional_instructions,
         test_data=test_case.test_data,
         persona_instructions=test_case.persona_instructions,
+        enable_recording=test_case.enable_recording,
         created_at=test_case.created_at,
         call=CallInfoResponse(
             status=call_session.status,

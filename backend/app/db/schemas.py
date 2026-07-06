@@ -13,6 +13,7 @@ class CreateTestRequest(BaseModel):
     additional_instructions: str | None = None
     test_data: str | None = None
     persona_instructions: str | None = None
+    enable_recording: bool = False
 
 
 class CriteriaEvaluation(BaseModel):
@@ -77,6 +78,7 @@ class TestResultResponse(BaseModel):
     additional_instructions: str | None
     test_data: str | None
     persona_instructions: str | None
+    enable_recording: bool
     created_at: datetime
     call: CallInfoResponse | None
     transcript: list[TranscriptUtteranceResponse]

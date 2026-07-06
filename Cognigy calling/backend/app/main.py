@@ -30,7 +30,11 @@ def _add_missing_columns() -> None:
     if "test_cases" not in inspector.get_table_names():
         return
     existing_columns = {col["name"] for col in inspector.get_columns("test_cases")}
-    new_columns = {"test_data": "TEXT", "persona_instructions": "TEXT"}
+    new_columns = {
+        "test_data": "TEXT",
+        "persona_instructions": "TEXT",
+        "enable_recording": "BOOLEAN NOT NULL DEFAULT 0",
+    }
     with engine.begin() as connection:
         for column_name, column_type in new_columns.items():
             if column_name not in existing_columns:

@@ -10,6 +10,7 @@ const defaultForm = {
   additional_instructions: "",
   test_data: "",
   persona_instructions: "",
+  enable_recording: false,
 };
 
 function parseCriteria(raw) {
@@ -60,8 +61,8 @@ export default function App() {
   }, [screen, testId]);
 
   const onChange = (event) => {
-    const { name, value } = event.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = event.target;
+    setForm((prev) => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
   };
 
   const onSubmit = async (event) => {
@@ -179,6 +180,16 @@ export default function App() {
                 rows={3}
                 placeholder={"How the AI caller should behave, e.g.\nStay silent after the greeting and just observe what the bot says.\nWhen asked for DOB, say it as \"15 March 1990\" not \"03/15/1990\"."}
               />
+            </label>
+
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                name="enable_recording"
+                checked={form.enable_recording}
+                onChange={onChange}
+              />
+              Record this call in Twilio
             </label>
 
             <button type="submit" disabled={loading}>

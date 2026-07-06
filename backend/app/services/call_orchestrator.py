@@ -38,7 +38,9 @@ class CallOrchestrator:
             return
 
         try:
-            call_result = self.twilio_service.start_outbound_call(test_case.phone_number, test_id)
+            call_result = self.twilio_service.start_outbound_call(
+                test_case.phone_number, test_id, record=test_case.enable_recording
+            )
             call_session.status = "running"
             call_session.provider_call_sid = call_result.provider_call_sid
             call_session.metadata_json = {
