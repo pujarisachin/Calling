@@ -56,6 +56,21 @@ def create_test(
     )
 
 
+@router.post("/{test_id}/end-call", status_code=status.HTTP_200_OK)
+def end_call(test_id: str, db: Session = Depends(get_db)) -> dict:
+    call_session = TestRepository.get_call_session(db, test_id)
+    if not call_session:
+        raise HTTPException(status_code=404, detail="Call session not found")
+
+    if not call_session.provider_call_sid:
+        raise HTTPException(status_code=400, detail="Call has no provider call SID to hang up")
+
+    settings = get_settings()
+    TwilioService(settings).hangup_call(call_session.provider_call_sid)
+
+    return {"status": "hangup_requested"}
+
+
 @router.get("/{test_id}", response_model=TestResultResponse)
 def get_test_result(test_id: str, db: Session = Depends(get_db)) -> TestResultResponse:
     test_case = TestRepository.get_test(db, test_id)

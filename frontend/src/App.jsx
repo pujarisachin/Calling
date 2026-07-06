@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { createTest, fetchTestResult } from "./api";
+import { createTest, endCall, fetchTestResult } from "./api";
 
 const defaultForm = {
   phone_number: "",
@@ -26,6 +26,7 @@ export default function App() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [endingCall, setEndingCall] = useState(false);
 
   const callStatus = result?.call?.status || "queued";
   const isFinished = useMemo(() => {
@@ -80,6 +81,18 @@ export default function App() {
       setError(submitError.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const onEndCall = async () => {
+    setEndingCall(true);
+    setError("");
+    try {
+      await endCall(testId);
+    } catch (endError) {
+      setError(endError.message);
+    } finally {
+      setEndingCall(false);
     }
   };
 
@@ -181,6 +194,12 @@ export default function App() {
           <p>Test ID: {testId}</p>
           <p>Current Call Status: {callStatus}</p>
           <p>The platform is running the scenario and polling results automatically.</p>
+
+          <div className="actions">
+            <button type="button" onClick={onEndCall} disabled={endingCall || isFinished}>
+              {endingCall ? "Ending Call..." : "End Call"}
+            </button>
+          </div>
 
           <h3>Live Transcript</h3>
           {result?.call?.metadata?.transcript_note && <p>{result.call.metadata.transcript_note}</p>}

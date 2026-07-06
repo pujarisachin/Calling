@@ -49,6 +49,7 @@ class RealtimeBridgeService:
         context_resolved = asyncio.Event()
         audio_deltas_sent = 0
         audio_deltas_dropped = 0
+        response_active = False
 
         try:
             logger.info("Connecting to OpenAI Realtime: %s", openai_url)
@@ -95,7 +96,7 @@ class RealtimeBridgeService:
                         await asyncio.to_thread(TwilioService(self.settings).hangup_call, call_sid)
 
                 async def openai_to_twilio() -> None:
-                    nonlocal greeted, audio_deltas_sent, audio_deltas_dropped
+                    nonlocal greeted, audio_deltas_sent, audio_deltas_dropped, response_active
                     while True:
                         raw = await openai_ws.recv()
                         event = json.loads(raw)
@@ -105,6 +106,7 @@ class RealtimeBridgeService:
                             pass  # high-volume; handled below
                         elif event_type == "error":
                             logger.error("OpenAI ERROR event: %s", json.dumps(event))
+                            response_active = False
                         else:
                             logger.info("OpenAI event: %s | %s", event_type, json.dumps(event))
 
@@ -131,6 +133,7 @@ class RealtimeBridgeService:
                             }))
                             await openai_ws.send(json.dumps({"type": "response.create"}))
                             greeted = True
+                            response_active = True
                             session_created.set()
                         elif event_type == "response.output_audio.delta":
                             delta_b64 = event.get("delta", "")
@@ -151,8 +154,12 @@ class RealtimeBridgeService:
                                 if audio_deltas_dropped == 1:
                                     logger.warning("Dropping audio delta — stream_sid not yet set (will count silently)")
                         elif event_type == "input_audio_buffer.speech_stopped":
-                            logger.info("User speech stopped — requesting response")
-                            await openai_ws.send(json.dumps({"type": "response.create"}))
+                            if response_active:
+                                logger.info("User speech stopped — response already in progress, not re-triggering")
+                            else:
+                                logger.info("User speech stopped — requesting response")
+                                response_active = True
+                                await openai_ws.send(json.dumps({"type": "response.create"}))
                         elif event_type == "conversation.item.input_audio_transcription.completed":
                             transcript_text = (event.get("transcript") or "").strip()
                             logger.info("User speech transcribed: %s", transcript_text)
@@ -170,6 +177,7 @@ class RealtimeBridgeService:
                             )
                             audio_deltas_sent = 0
                             audio_deltas_dropped = 0
+                            response_active = False
                         elif event_type == "response.output_item.done":
                             # Try to get text from output items if audio transcript not available
                             item = event.get("item", {})
@@ -224,6 +232,24 @@ class RealtimeBridgeService:
                             },
                             "output": {
                                 "format": {"type": "audio/pcmu"},
+                            },
+                        },
+                    },
+                }
+            )
+        )
+        # Sent as a separate update so a rejection here (e.g. unsupported transcription
+        # model on this account) can't take down the audio/instructions config above —
+        # it only means the other party's speech won't be transcribed into the transcript.
+        await openai_ws.send(
+            json.dumps(
+                {
+                    "type": "session.update",
+                    "session": {
+                        "type": "realtime",
+                        "audio": {
+                            "input": {
+                                "transcription": {"model": "gpt-4o-mini-transcribe"},
                             },
                         },
                     },

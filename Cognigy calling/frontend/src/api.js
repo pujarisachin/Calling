@@ -34,3 +34,14 @@ export async function fetchTestResult(testId) {
   }
   return response.json();
 }
+
+export async function endCall(testId) {
+  const response = await fetch(`${API_BASE_URL}/api/tests/${testId}/end-call`, {
+    method: "POST",
+  });
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(message || "Failed to end call");
+  }
+  return response.json();
+}
