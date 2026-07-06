@@ -125,6 +125,7 @@ class RealtimeBridgeService:
                             active_context = self._resolve_context(call_sid=call_sid, test_id=test_id)
                             context_resolved.set()
                         elif event_type == "media":
+                            # Only forward audio after OpenAI session is ready
                             if session_created.is_set():
                                 media = event.get("media", {})
                                 payload = media.get("payload")
@@ -190,6 +191,9 @@ class RealtimeBridgeService:
                                 audio_deltas_dropped += 1
                                 if audio_deltas_dropped == 1:
                                     logger.warning("Dropping audio delta — stream_sid not yet set (will count silently)")
+                        elif event_type == "input_audio_buffer.speech_stopped":
+                            logger.info("User speech stopped — requesting response")
+                            await openai_ws.send(json.dumps({"type": "response.create"}))
                         elif event_type == "conversation.item.input_audio_transcription.completed":
                             transcript_text = (event.get("transcript") or "").strip()
                             logger.info("User speech transcribed: %s", transcript_text)
@@ -208,6 +212,7 @@ class RealtimeBridgeService:
                             audio_deltas_sent = 0
                             audio_deltas_dropped = 0
                         elif event_type == "response.output_item.done":
+                            # Try to get text from output items if audio transcript not available
                             item = event.get("item", {})
                             for content in item.get("content", []):
                                 if content.get("type") == "text":

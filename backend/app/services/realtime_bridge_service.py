@@ -191,6 +191,9 @@ class RealtimeBridgeService:
                                 audio_deltas_dropped += 1
                                 if audio_deltas_dropped == 1:
                                     logger.warning("Dropping audio delta — stream_sid not yet set (will count silently)")
+                        elif event_type == "input_audio_buffer.speech_stopped":
+                            logger.info("User speech stopped — requesting response")
+                            await openai_ws.send(json.dumps({"type": "response.create"}))
                         elif event_type == "conversation.item.input_audio_transcription.completed":
                             transcript_text = (event.get("transcript") or "").strip()
                             logger.info("User speech transcribed: %s", transcript_text)
