@@ -3,7 +3,262 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Voice Bot Testing Platform</title>
+    <title>PhantomCaller - Autonomous Voice Testing Platform</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN with custom config -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      :root {
+        --color-cyan: #00BFFF;
+        --color-blue: #4B6EF5;
+        --color-purple: #8B5CF6;
+        --font-sans: 'Inter', sans-serif;
+        --font-display: 'Plus Jakarta Sans', sans-serif;
+
+        /* Light mode - Fresh & Professional */
+        --bg-primary: #FFFFFF;
+        --bg-secondary: #F7F9FC;
+        --bg-tertiary: #EFF2F7;
+        --text-primary: #0F1419;
+        --text-secondary: #36454F;
+        --text-tertiary: #6B7280;
+        --border-color: #E5E9F2;
+        --card-bg: #FFFFFF;
+        --input-bg: #F7F9FC;
+        --shadow-color: rgba(0, 0, 0, 0.08);
+      }
+
+      [data-theme="dark"] {
+        --bg-primary: #0F172A;
+        --bg-secondary: #1A2540;
+        --bg-tertiary: #2D3E5F;
+        --text-primary: #F1F5F9;
+        --text-secondary: #CBD5E1;
+        --text-tertiary: #94A3B8;
+        --border-color: #334155;
+        --card-bg: #1A2540;
+        --input-bg: #2D3E5F;
+        --shadow-color: rgba(0, 0, 0, 0.3);
+      }
+
+      * {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      }
+
+      h1, h2, h3, h4, h5, h6 {
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-weight: 700;
+      }
+
+      /* Theme transitions */
+      html {
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        transition: background-color 300ms ease, color 300ms ease;
+      }
+
+      body {
+        background-color: var(--bg-primary) !important;
+        color: var(--text-primary) !important;
+        transition: background-color 300ms ease, color 300ms ease;
+      }
+
+      /* Smooth animations */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideInLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes slideInRight {
+        from {
+          opacity: 0;
+          transform: translateX(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes scaleIn {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @keyframes pulse-glow {
+        0%, 100% {
+          box-shadow: 0 0 0 0 rgba(75, 110, 245, 0.7);
+        }
+        50% {
+          box-shadow: 0 0 0 10px rgba(75, 110, 245, 0);
+        }
+      }
+
+      @keyframes float {
+        0%, 100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      .animate-fadeInUp {
+        animation: fadeInUp 0.6s ease-out;
+      }
+
+      .animate-slideInLeft {
+        animation: slideInLeft 0.6s ease-out;
+      }
+
+      .animate-slideInRight {
+        animation: slideInRight 0.6s ease-out;
+      }
+
+      .animate-scaleIn {
+        animation: scaleIn 0.5s ease-out;
+      }
+
+      .animate-float {
+        animation: float 3s ease-in-out infinite;
+      }
+
+      .animate-pulse-glow {
+        animation: pulse-glow 2s infinite;
+      }
+
+      /* Smooth transitions */
+      body {
+        transition: background-color 300ms ease, color 300ms ease;
+      }
+
+      /* Gradient text */
+      .gradient-text {
+        background: linear-gradient(135deg, #00BFFF 0%, #4B6EF5 50%, #8B5CF6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      /* Glass morphism effect */
+      .glass {
+        background: rgba(255, 255, 255, 0.1);
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      /* Shadow effects */
+      .shadow-glow {
+        box-shadow: 0 0 30px rgba(75, 110, 245, 0.3);
+      }
+
+      .shadow-hover {
+        transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .shadow-hover:hover {
+        box-shadow: 0 10px 30px var(--shadow-color);
+        transform: translateY(-2px);
+      }
+
+      /* Light mode card shadow */
+      [data-theme="light"] .shadow-hover:hover {
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Light mode base styling */
+      [data-theme="light"] * {
+        --tw-ring-color: rgba(75, 110, 245, 0.5);
+      }
+
+      /* Card styling for light mode */
+      [data-theme="light"] .glass {
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(200, 210, 225, 0.5);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      }
+
+      /* Input and form field styling */
+      input, textarea, select {
+        transition: background-color 300ms ease, color 300ms ease, border-color 300ms ease;
+        font-size: 16px;
+      }
+
+      input::placeholder, textarea::placeholder {
+        color: var(--text-tertiary);
+        opacity: 0.7;
+      }
+
+      input:focus, textarea:focus, select:focus {
+        box-shadow: 0 0 0 2px var(--input-bg), 0 0 0 4px rgba(75, 110, 245, 0.5);
+      }
+
+      /* Dark mode input styling */
+      [data-theme="dark"] input,
+      [data-theme="dark"] textarea,
+      [data-theme="dark"] select {
+        background-color: #2D3E5F;
+        color: #F1F5F9;
+        border-color: #334155;
+      }
+
+      [data-theme="dark"] input:focus,
+      [data-theme="dark"] textarea:focus,
+      [data-theme="dark"] select:focus {
+        border-color: #4B6EF5;
+      }
+
+      /* Light mode input styling */
+      [data-theme="light"] input,
+      [data-theme="light"] textarea,
+      [data-theme="light"] select {
+        background-color: #F7F9FC;
+        color: #0F1419;
+        border-color: #E5E9F2;
+      }
+
+      [data-theme="light"] input:focus,
+      [data-theme="light"] textarea:focus,
+      [data-theme="light"] select:focus {
+        border-color: #4B6EF5;
+      }
+
+      /* Option styling for select dropdowns */
+      option {
+        color: var(--text-primary);
+        background-color: var(--bg-primary);
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>

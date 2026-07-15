@@ -1,0 +1,213 @@
+/* PhantomCaller Design System - CSS Variables */
+/* Light & Dark theme switching via [data-theme] attribute on <html> */
+
+:root {
+  /* ===== BRAND COLORS ===== */
+  --color-cyan: #00BFFF;
+  --color-blue: #4B6EF5;
+  --color-purple: #8B5CF6;
+
+  /* ===== SEMANTIC COLORS (Light Mode) ===== */
+  --color-primary: #4B6EF5;
+  --color-primary-dark: #3B4FD9;
+  --color-primary-light: #7B8FFF;
+
+  --color-success: #10B981;
+  --color-success-dark: #059669;
+  --color-success-light: #6EE7B7;
+
+  --color-warning: #F59E0B;
+  --color-warning-dark: #D97706;
+  --color-warning-light: #FCD34D;
+
+  --color-error: #EF4444;
+  --color-error-dark: #DC2626;
+  --color-error-light: #FCA5A5;
+
+  --color-info: #3B82F6;
+  --color-info-dark: #1D4ED8;
+  --color-info-light: #93C5FD;
+
+  /* ===== NEUTRAL SCALE (Light Mode) ===== */
+  --color-bg-primary: #FFFFFF;
+  --color-bg-secondary: #F9FAFB;
+  --color-bg-tertiary: #F3F4F6;
+
+  --color-surface-1: #FFFFFF;
+  --color-surface-2: #F9FAFB;
+  --color-surface-3: #F3F4F6;
+
+  --color-border-light: #E5E7EB;
+  --color-border-medium: #D1D5DB;
+  --color-border-dark: #9CA3AF;
+
+  --color-text-primary: #111827;
+  --color-text-secondary: #6B7280;
+  --color-text-tertiary: #9CA3AF;
+  --color-text-disabled: #D1D5DB;
+
+  --color-text-inverse: #FFFFFF;
+
+  /* ===== GRADIENTS ===== */
+  --gradient-primary: linear-gradient(135deg, #00BFFF 0%, #4B6EF5 50%, #8B5CF6 100%);
+  --gradient-primary-hover: linear-gradient(135deg, #00BFFF 0%, #3B4FD9 50%, #7D4EE8 100%);
+
+  /* ===== SHADOWS (Light Mode) ===== */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+  /* ===== SPACING (8px grid) ===== */
+  --spacing-0: 0;
+  --spacing-1: 0.25rem; /* 4px */
+  --spacing-2: 0.5rem; /* 8px */
+  --spacing-3: 0.75rem; /* 12px */
+  --spacing-4: 1rem; /* 16px */
+  --spacing-6: 1.5rem; /* 24px */
+  --spacing-8: 2rem; /* 32px */
+  --spacing-10: 2.5rem; /* 40px */
+  --spacing-12: 3rem; /* 48px */
+  --spacing-16: 4rem; /* 64px */
+  --spacing-20: 5rem; /* 80px */
+  --spacing-24: 6rem; /* 96px */
+
+  /* ===== BORDER RADIUS ===== */
+  --radius-xs: 0.25rem; /* 4px */
+  --radius-sm: 0.375rem; /* 6px */
+  --radius-md: 0.5rem; /* 8px */
+  --radius-lg: 0.75rem; /* 12px */
+  --radius-xl: 1rem; /* 16px */
+  --radius-full: 9999px;
+
+  /* ===== TYPOGRAPHY ===== */
+  --font-family-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-family-mono: 'Menlo', 'Monaco', 'Courier New', monospace;
+
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-base: 1rem; /* 16px */
+  --font-size-lg: 1.125rem; /* 18px */
+  --font-size-xl: 1.25rem; /* 20px */
+  --font-size-2xl: 1.5rem; /* 24px */
+  --font-size-3xl: 1.875rem; /* 30px */
+  --font-size-4xl: 2.25rem; /* 36px */
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  /* ===== TRANSITIONS & ANIMATIONS ===== */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ===== Z-INDEX SCALE ===== */
+  --z-dropdown: 1000;
+  --z-sticky: 100;
+  --z-modal: 1040;
+  --z-tooltip: 1060;
+  --z-notification: 1080;
+
+  /* ===== COMPONENT SIZES ===== */
+  --size-sidebar-width: 16rem; /* 256px */
+  --size-sidebar-width-collapsed: 4.5rem; /* 72px */
+  --size-topbar-height: 3.5rem; /* 56px */
+  --size-button-height-sm: 2rem; /* 32px */
+  --size-button-height-md: 2.5rem; /* 40px */
+  --size-button-height-lg: 3rem; /* 48px */
+}
+
+/* ===== DARK MODE ===== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Neutral Scale (Dark Mode) */
+    --color-bg-primary: #0A0A0F;
+    --color-bg-secondary: #12121A;
+    --color-bg-tertiary: #1A1A24;
+
+    --color-surface-1: #12121A;
+    --color-surface-2: #1A1A24;
+    --color-surface-3: #24242E;
+
+    --color-border-light: #2D2D3D;
+    --color-border-medium: #424254;
+    --color-border-dark: #5A5A6E;
+
+    --color-text-primary: #E2E8F0;
+    --color-text-secondary: #A0AEC0;
+    --color-text-tertiary: #718096;
+    --color-text-disabled: #4A5568;
+
+    --color-text-inverse: #0A0A0F;
+
+    /* Shadows (Dark Mode) */
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* ===== EXPLICIT DARK MODE (data-theme="dark") ===== */
+[data-theme="dark"] {
+  --color-bg-primary: #0A0A0F;
+  --color-bg-secondary: #12121A;
+  --color-bg-tertiary: #1A1A24;
+
+  --color-surface-1: #12121A;
+  --color-surface-2: #1A1A24;
+  --color-surface-3: #24242E;
+
+  --color-border-light: #2D2D3D;
+  --color-border-medium: #424254;
+  --color-border-dark: #5A5A6E;
+
+  --color-text-primary: #E2E8F0;
+  --color-text-secondary: #A0AEC0;
+  --color-text-tertiary: #718096;
+  --color-text-disabled: #4A5568;
+
+  --color-text-inverse: #0A0A0F;
+
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+}
+
+/* ===== EXPLICIT LIGHT MODE (data-theme="light") ===== */
+[data-theme="light"] {
+  --color-bg-primary: #FFFFFF;
+  --color-bg-secondary: #F9FAFB;
+  --color-bg-tertiary: #F3F4F6;
+
+  --color-surface-1: #FFFFFF;
+  --color-surface-2: #F9FAFB;
+  --color-surface-3: #F3F4F6;
+
+  --color-border-light: #E5E7EB;
+  --color-border-medium: #D1D5DB;
+  --color-border-dark: #9CA3AF;
+
+  --color-text-primary: #111827;
+  --color-text-secondary: #6B7280;
+  --color-text-tertiary: #9CA3AF;
+  --color-text-disabled: #D1D5DB;
+
+  --color-text-inverse: #FFFFFF;
+
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}

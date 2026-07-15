@@ -104,4 +104,55 @@ button:disabled {
 
 .actions {
   margin-top: 1rem;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* Not Found (404) Page */
+.not-found-content {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.not-found-content .error-code {
+  font-size: 5rem;
+  font-weight: bold;
+  color: #2563eb;
+  margin-bottom: 1rem;
+  line-height: 1;
+}
+
+.not-found-content h2 {
+  font-size: 1.75rem;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.not-found-content .error-message {
+  color: #6b7280;
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.secondary-btn {
+  background: #e5e7eb;
+  color: #1f2937;
+}
+
+.secondary-btn:hover {
+  background: #d1d5db;
+}
+
+button:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  transition: all 0.2s ease;
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0);
 }
