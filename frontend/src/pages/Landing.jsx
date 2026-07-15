@@ -81,7 +81,7 @@ export default function Landing() {
       {/* Content */}
       <div className="relative z-10">
         {/* Navigation */}
-        <nav className="fixed top-0 left-0 right-0 backdrop-blur-md bg-slate-900/50 border-b border-slate-700/50 z-40">
+        <nav className="fixed top-0 left-0 right-0 backdrop-blur-md border-b z-40" style={{ backgroundColor: 'rgba(15, 23, 42, 0.8)', borderColor: 'var(--border-color)' }}>
           <div className="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
             <div className="flex items-center gap-3 group cursor-pointer hover:opacity-80 transition" onClick={() => navigate('/')}>
               <Logo size={40} />
@@ -89,14 +89,14 @@ export default function Landing() {
                 <h1 className="text-lg font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
                   PhantomCaller
                 </h1>
-                <p className="text-xs text-slate-400">Enterprise Voice Testing</p>
+                <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Enterprise Voice Testing</p>
               </div>
             </div>
 
             <div className="flex items-center gap-6">
-              <a href="#features" className="text-slate-300 hover:text-inherit transition duration-300">Features</a>
-              <a href="#benefits" className="text-slate-300 hover:text-inherit transition duration-300">Benefits</a>
-              <a href="#docs" className="text-slate-300 hover:text-inherit transition duration-300">How It Works</a>
+              <a href="#features" className="hover:text-inherit transition duration-300" style={{ color: 'var(--text-secondary)' }}>Features</a>
+              <a href="#benefits" className="hover:text-inherit transition duration-300" style={{ color: 'var(--text-secondary)' }}>Benefits</a>
+              <a href="#docs" className="hover:text-inherit transition duration-300" style={{ color: 'var(--text-secondary)' }}>How It Works</a>
               <Button
                 variant="primary"
                 size="sm"
@@ -123,14 +123,15 @@ export default function Landing() {
               <h1 className="text-5xl lg:text-6xl font-bold leading-tight text-inherit">
                 AI-Powered
               </h1>
-              <h1 className="text-6xl lg:text-7xl font-bold leading-tight gradient-text">
-                Voice Testing at Scale
+              <h1 className="text-6xl lg:text-7xl font-bold leading-tight gradient-text px-2">
+                <span className="block">Voice</span>
+                <span className="block">Testing at Scale</span>
               </h1>
-              <p className="text-2xl text-slate-300">Before your customers call, we do.</p>
+              <p className="text-2xl" style={{ color: 'var(--text-secondary)' }}>Before your customers call, we do.</p>
             </div>
 
             {/* Subheading */}
-            <p className="text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-xl max-w-2xl mx-auto leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
               Deploy AI agents to test voice bots at enterprise scale. Real conversations, real insights, zero manual testing. Your QA team's new superpower.
             </p>
 
@@ -155,31 +156,31 @@ export default function Landing() {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-3 gap-8 pt-16 border-t border-slate-700">
+            <div className="grid grid-cols-3 gap-8 pt-16 border-t" style={{ borderColor: 'var(--border-color)' }}>
               <div className="space-y-2 animate-slideInLeft" style={{ animationDelay: '200ms' }}>
                 <p className="text-3xl font-bold text-cyan-400">10K+</p>
-                <p className="text-sm text-slate-400">Tests Run Monthly</p>
+                <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>Tests Run Monthly</p>
               </div>
               <div className="space-y-2 animate-slideInLeft" style={{ animationDelay: '400ms' }}>
                 <p className="text-3xl font-bold text-blue-400">94%</p>
-                <p className="text-sm text-slate-400">Average Accuracy</p>
+                <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>Average Accuracy</p>
               </div>
               <div className="space-y-2 animate-slideInLeft" style={{ animationDelay: '600ms' }}>
                 <p className="text-3xl font-bold text-purple-400">50ms</p>
-                <p className="text-sm text-slate-400">Response Time</p>
+                <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>Response Time</p>
               </div>
             </div>
           </div>
         </section>
 
         {/* Features Section */}
-        <section id="features" className="py-20 px-8 bg-slate-800/50">
+        <section id="features" className="py-20 px-8" style={{ backgroundColor: 'var(--bg-secondary)' }}>
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16 animate-fadeInUp">
               <h2 className="text-4xl lg:text-5xl font-bold mb-4">
                 Enterprise-Grade Features
               </h2>
-              <p className="text-xl text-slate-300">
+              <p className="text-xl" style={{ color: 'var(--text-secondary)' }}>
                 Everything you need to test voice applications at scale
               </p>
             </div>
@@ -190,16 +191,18 @@ export default function Landing() {
                 return (
                   <div
                     key={feature.title}
-                    className="group p-8 rounded-2xl bg-gradient-to-br from-slate-700/50 to-slate-800/50 border border-slate-600/50 hover:border-blue-500/50 shadow-hover animate-fadeInUp transition-all duration-500"
+                    className="group p-8 rounded-2xl border hover:border-blue-500/50 shadow-hover animate-fadeInUp transition-all duration-500"
                     style={{
+                      backgroundColor: 'var(--card-bg)',
+                      borderColor: 'var(--border-color)',
                       animationDelay: `${idx * 100}ms`,
                     }}
                   >
                     <div className="p-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 w-fit rounded-xl mb-4 group-hover:scale-110 transition-transform duration-300">
                       <Icon size={24} className="text-inherit" />
                     </div>
-                    <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-                    <p className="text-slate-400">{feature.description}</p>
+                    <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>{feature.title}</h3>
+                    <p style={{ color: 'var(--text-tertiary)' }}>{feature.description}</p>
                   </div>
                 );
               })}
@@ -208,13 +211,13 @@ export default function Landing() {
         </section>
 
         {/* ROI & Savings Section */}
-        <section id="benefits" className="py-20 px-8 bg-slate-800/30">
+        <section id="benefits" className="py-20 px-8" style={{ backgroundColor: 'var(--bg-secondary)' }}>
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-16 animate-fadeInUp">
               <h2 className="text-4xl lg:text-5xl font-bold mb-4">
                 Real Results. Measurable Impact.
               </h2>
-              <p className="text-lg text-slate-300">
+              <p className="text-lg" style={{ color: 'var(--text-secondary)' }}>
                 See how PhantomCaller transforms your testing efficiency
               </p>
             </div>
@@ -239,14 +242,14 @@ export default function Landing() {
               ].map((stat, idx) => (
                 <div
                   key={stat.title}
-                  className="p-8 rounded-2xl bg-gradient-to-br from-slate-700/40 to-slate-800/40 border border-slate-600/50 hover:border-blue-500/50 transition-all duration-300 animate-fadeInUp"
-                  style={{ animationDelay: `${idx * 100}ms` }}
+                  className="p-8 rounded-2xl border hover:border-blue-500/50 transition-all duration-300 animate-fadeInUp"
+                  style={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)', animationDelay: `${idx * 100}ms` }}
                 >
-                  <p className="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-2">{stat.title}</p>
+                  <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: 'var(--text-tertiary)' }}>{stat.title}</p>
                   <p className="text-5xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
                     {stat.value}
                   </p>
-                  <p className="text-slate-300 text-sm leading-relaxed">{stat.description}</p>
+                  <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{stat.description}</p>
                 </div>
               ))}
             </div>
@@ -260,7 +263,7 @@ export default function Landing() {
               <h2 className="text-4xl lg:text-5xl font-bold mb-4">
                 How It Works
               </h2>
-              <p className="text-lg text-slate-300">
+              <p className="text-lg" style={{ color: 'var(--text-secondary)' }}>
                 Understand the PhantomCaller advantage
               </p>
             </div>
@@ -294,8 +297,8 @@ export default function Landing() {
               ].map((item, idx) => (
                 <div
                   key={item.step}
-                  className="p-8 rounded-2xl bg-gradient-to-br from-slate-700/40 to-slate-800/40 border border-slate-600/50 hover:border-cyan-500/50 transition-all duration-300 animate-fadeInUp"
-                  style={{ animationDelay: `${idx * 100}ms` }}
+                  className="p-8 rounded-2xl border hover:border-cyan-500/50 transition-all duration-300 animate-fadeInUp"
+                  style={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)', animationDelay: `${idx * 100}ms` }}
                 >
                   <div className="flex items-start gap-4">
                     <div className="flex-shrink-0">
@@ -304,9 +307,9 @@ export default function Landing() {
                       </div>
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-bold text-inherit mb-2">{item.title}</h3>
-                      <p className="text-slate-400 text-sm mb-3">{item.description}</p>
-                      <div className="pt-3 border-t border-slate-600/50">
+                      <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>{item.title}</h3>
+                      <p className="text-sm mb-3" style={{ color: 'var(--text-tertiary)' }}>{item.description}</p>
+                      <div className="pt-3 border-t" style={{ borderColor: 'var(--border-color)' }}>
                         <p className="text-xs text-cyan-400 font-semibold">{item.metrics}</p>
                       </div>
                     </div>
@@ -318,17 +321,17 @@ export default function Landing() {
         </section>
 
         {/* Product Story Section */}
-        <section className="py-16 px-8 bg-slate-800/30">
+        <section className="py-16 px-8" style={{ backgroundColor: 'var(--bg-secondary)' }}>
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12 animate-fadeInUp">
               <h2 className="text-4xl lg:text-5xl font-bold mb-4">The PhantomCaller Advantage</h2>
-              <p className="text-lg text-slate-300">See how we revolutionize voice bot testing</p>
+              <p className="text-lg" style={{ color: 'var(--text-secondary)' }}>See how we revolutionize voice bot testing</p>
             </div>
             <img
               src={storyImage}
               alt="PhantomCaller Story - Before & After"
-              className="w-full rounded-2xl shadow-2xl border border-slate-700/50 animate-fadeInUp"
-              style={{ animationDelay: '100ms' }}
+              className="w-full rounded-2xl shadow-2xl border animate-fadeInUp"
+              style={{ borderColor: 'var(--border-color)', animationDelay: '100ms' }}
             />
           </div>
         </section>
@@ -337,7 +340,7 @@ export default function Landing() {
         <section className="py-20 px-8 bg-gradient-to-r from-cyan-600 via-blue-600 to-purple-600 text-inherit">
           <div className="max-w-3xl mx-auto text-center animate-fadeInUp">
             <h2 className="text-4xl font-bold mb-6">Ready to Transform Testing?</h2>
-            <p className="text-lg mb-8 text-slate-100">
+            <p className="text-lg mb-8" style={{ color: 'var(--text-secondary)' }}>
               Join enterprise teams automating voice testing at scale.
             </p>
             <Button
@@ -352,7 +355,7 @@ export default function Landing() {
         </section>
 
         {/* Footer */}
-        <footer className="py-8 px-8 border-t border-slate-700 text-center text-slate-400 text-sm">
+        <footer className="py-8 px-8 border-t text-center text-sm" style={{ borderColor: 'var(--border-color)', color: 'var(--text-tertiary)' }}>
           <p>&copy; 2024 PhantomCaller. All rights reserved.</p>
           <p className="mt-2">Autonomous Voice Testing, Redefined.</p>
         </footer>
