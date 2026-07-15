@@ -49,30 +49,30 @@ export default function Landing() {
   }, []);
 
   return (
-    <div className="min-h-screen text-inherit overflow-hidden" style={{ backgroundImage: 'linear-gradient(135deg, #0F172A 0%, #1A254A 50%, #0F172A 100%)' }}>
-      {/* Animated background orbs */}
+    <div className="min-h-screen text-inherit overflow-hidden" style={{ backgroundImage: 'linear-gradient(135deg, #0A0E27 0%, #1a0d4d 25%, #0d1f3d 50%, #0a2847 75%, #0A0E27 100%)' }}>
+      {/* Animated background orbs - Enhanced */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div
-          className="absolute w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20"
+          className="absolute w-[500px] h-[500px] bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full mix-blend-screen filter blur-3xl opacity-25"
           style={{
-            top: '20%',
-            left: '10%',
+            top: '-10%',
+            left: '-5%',
             animation: 'float 20s ease-in-out infinite',
           }}
         />
         <div
-          className="absolute w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20"
+          className="absolute w-[600px] h-[600px] bg-gradient-to-r from-purple-600 to-pink-500 rounded-full mix-blend-screen filter blur-3xl opacity-20"
           style={{
-            top: '50%',
-            right: '10%',
+            top: '40%',
+            right: '-10%',
             animation: 'float 15s ease-in-out infinite 2s',
           }}
         />
         <div
-          className="absolute w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20"
+          className="absolute w-[500px] h-[500px] bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full mix-blend-screen filter blur-3xl opacity-20"
           style={{
-            bottom: '20%',
-            left: '50%',
+            bottom: '-10%',
+            left: '20%',
             animation: 'float 25s ease-in-out infinite 4s',
           }}
         />
@@ -174,10 +174,10 @@ export default function Landing() {
         </section>
 
         {/* Features Section */}
-        <section id="features" className="py-20 px-8" style={{ backgroundColor: 'var(--bg-secondary)' }}>
+        <section id="features" className="py-24 px-8 relative" style={{ backgroundImage: 'linear-gradient(180deg, rgba(10, 14, 39, 0.5) 0%, rgba(26, 13, 77, 0.3) 50%, rgba(10, 14, 39, 0.5) 100%)' }}>
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16 animate-fadeInUp">
-              <h2 className="text-4xl lg:text-5xl font-bold mb-4">
+              <h2 className="text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
                 Enterprise-Grade Features
               </h2>
               <p className="text-xl" style={{ color: '#D1D5DB' }}>
@@ -185,16 +185,21 @@ export default function Landing() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {FEATURES.map((feature, idx) => {
                 const Icon = feature.icon;
+                const gradients = [
+                  'linear-gradient(135deg, rgba(0, 191, 255, 0.1) 0%, rgba(75, 110, 245, 0.05) 100%)',
+                  'linear-gradient(135deg, rgba(75, 110, 245, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%)',
+                  'linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(0, 191, 255, 0.05) 100%)',
+                ];
                 return (
                   <div
                     key={feature.title}
-                    className="group p-8 rounded-2xl border hover:border-blue-500/50 shadow-hover animate-fadeInUp transition-all duration-500"
+                    className="group p-8 rounded-2xl border hover:scale-105 hover:border-blue-400/80 shadow-hover animate-fadeInUp transition-all duration-500 backdrop-blur-sm"
                     style={{
-                      backgroundColor: 'var(--card-bg)',
-                      borderColor: 'var(--border-color)',
+                      backgroundImage: gradients[idx % 3],
+                      borderColor: 'rgba(59, 130, 246, 0.3)',
                       animationDelay: `${idx * 100}ms`,
                     }}
                   >
@@ -211,10 +216,10 @@ export default function Landing() {
         </section>
 
         {/* ROI & Savings Section */}
-        <section id="benefits" className="py-20 px-8" style={{ backgroundColor: 'var(--bg-secondary)' }}>
+        <section id="benefits" className="py-24 px-8 relative" style={{ backgroundImage: 'linear-gradient(180deg, rgba(10, 14, 39, 0.5) 0%, rgba(13, 31, 61, 0.3) 50%, rgba(10, 14, 39, 0.5) 100%)' }}>
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-16 animate-fadeInUp">
-              <h2 className="text-4xl lg:text-5xl font-bold mb-4">
+              <h2 className="text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
                 Real Results. Measurable Impact.
               </h2>
               <p className="text-lg" style={{ color: '#D1D5DB' }}>
@@ -222,7 +227,7 @@ export default function Landing() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[
                 {
                   title: 'Time Saved',
@@ -239,11 +244,17 @@ export default function Landing() {
                   value: '24/7',
                   description: 'Continuously test across 10+ languages and detect edge cases humans miss'
                 },
-              ].map((stat, idx) => (
+              ].map((stat, idx) => {
+                const statGradients = [
+                  'linear-gradient(135deg, rgba(0, 191, 255, 0.15) 0%, rgba(75, 110, 245, 0.05) 100%)',
+                  'linear-gradient(135deg, rgba(75, 110, 245, 0.15) 0%, rgba(139, 92, 246, 0.05) 100%)',
+                  'linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(0, 191, 255, 0.05) 100%)',
+                ];
+                return (
                 <div
                   key={stat.title}
-                  className="p-8 rounded-2xl border hover:border-blue-500/50 transition-all duration-300 animate-fadeInUp"
-                  style={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)', animationDelay: `${idx * 100}ms` }}
+                  className="p-8 rounded-2xl border hover:scale-105 hover:border-blue-400/80 transition-all duration-300 animate-fadeInUp backdrop-blur-sm"
+                  style={{ backgroundImage: statGradients[idx], borderColor: 'rgba(59, 130, 246, 0.3)', animationDelay: `${idx * 100}ms` }}
                 >
                   <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: '#B8D4FE' }}>{stat.title}</p>
                   <p className="text-5xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
@@ -251,16 +262,17 @@ export default function Landing() {
                   </p>
                   <p className="text-sm leading-relaxed" style={{ color: '#D1D5DB' }}>{stat.description}</p>
                 </div>
-              ))}
+              );
+              })
             </div>
           </div>
         </section>
 
         {/* Documentation Section */}
-        <section id="docs" className="py-20 px-8">
+        <section id="docs" className="py-24 px-8 relative" style={{ backgroundImage: 'linear-gradient(180deg, rgba(10, 14, 39, 0.5) 0%, rgba(13, 31, 61, 0.3) 50%, rgba(10, 14, 39, 0.5) 100%)' }}>
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-16 animate-fadeInUp">
-              <h2 className="text-4xl lg:text-5xl font-bold mb-4">
+              <h2 className="text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
                 How It Works
               </h2>
               <p className="text-lg" style={{ color: '#D1D5DB' }}>
@@ -268,7 +280,7 @@ export default function Landing() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {[
                 {
                   step: '1',
@@ -294,11 +306,18 @@ export default function Landing() {
                   description: 'Fix issues before your customers discover them with actionable insights',
                   metrics: 'Issue Detection Rate: 98%'
                 },
-              ].map((item, idx) => (
+              ].map((item, idx) => {
+                const workGradients = [
+                  'linear-gradient(135deg, rgba(0, 191, 255, 0.15) 0%, rgba(75, 110, 245, 0.05) 100%)',
+                  'linear-gradient(135deg, rgba(75, 110, 245, 0.15) 0%, rgba(139, 92, 246, 0.05) 100%)',
+                  'linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(0, 191, 255, 0.05) 100%)',
+                  'linear-gradient(135deg, rgba(0, 191, 255, 0.15) 0%, rgba(75, 110, 245, 0.05) 100%)',
+                ];
+                return (
                 <div
                   key={item.step}
-                  className="p-8 rounded-2xl border hover:border-cyan-500/50 transition-all duration-300 animate-fadeInUp"
-                  style={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)', animationDelay: `${idx * 100}ms` }}
+                  className="p-8 rounded-2xl border hover:scale-105 hover:border-cyan-400/80 transition-all duration-300 animate-fadeInUp backdrop-blur-sm"
+                  style={{ backgroundImage: workGradients[idx % 4], borderColor: 'rgba(59, 130, 246, 0.3)', animationDelay: `${idx * 100}ms` }}
                 >
                   <div className="flex items-start gap-4">
                     <div className="flex-shrink-0">
@@ -315,13 +334,14 @@ export default function Landing() {
                     </div>
                   </div>
                 </div>
-              ))}
+              );
+              })}
             </div>
           </div>
         </section>
 
         {/* Product Story Section */}
-        <section className="py-16 px-8" style={{ backgroundColor: 'var(--bg-secondary)' }}>
+        <section className="py-24 px-8 relative" style={{ backgroundImage: 'linear-gradient(180deg, rgba(10, 14, 39, 0.5) 0%, rgba(26, 13, 77, 0.3) 50%, rgba(10, 14, 39, 0.5) 100%)' }}>
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12 animate-fadeInUp">
               <h2 className="text-4xl lg:text-5xl font-bold mb-4">The PhantomCaller Advantage</h2>
