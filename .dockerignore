@@ -1,0 +1,27 @@
+.git/
+.gitignore
+
+# Python
+**/__pycache__/
+**/*.py[cod]
+**/.venv/
+**/venv/
+**/venv_check/
+**/*.db
+
+# Node
+**/node_modules/
+**/dist/
+
+# Env files
+**/.env
+**/.env.local
+
+# Logs
+**/*.log
+
+# Unrelated app copy
+Cognigy calling/
+
+# Docs/misc
+*.md
