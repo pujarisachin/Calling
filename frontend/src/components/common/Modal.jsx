@@ -46,22 +46,25 @@ export const Modal = React.forwardRef(
 
     return (
       <div
-        className="fixed inset-0 z-modal bg-black bg-opacity-50 flex items-center justify-center transition-all duration-200"
+        className="fixed inset-0 z-modal flex items-center justify-center transition-all duration-200"
+        style={{ backgroundColor: 'rgba(15, 23, 42, 0.7)' }}
         onClick={(e) => closeOnOutsideClick && e.target === e.currentTarget && onClose()}
       >
         <div
           ref={ref}
-          className={`bg-surface-1 rounded-lg shadow-xl max-h-[90vh] overflow-y-auto w-full mx-4 ${sizeClasses[size]}`}
+          className={`rounded-lg shadow-xl max-h-[90vh] overflow-y-auto w-full mx-4 ${sizeClasses[size]}`}
+          style={{ backgroundColor: 'var(--card-bg)' }}
         >
           {/* Header */}
           {title && (
-            <div className="flex items-center justify-between p-6 border-b border-border-light sticky top-0 bg-surface-1">
-              <h2 className="text-xl font-semibold text-text-primary">{title}</h2>
+            <div className="flex items-center justify-between p-6 border-b sticky top-0" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--card-bg)' }}>
+              <h2 className="text-xl font-semibold" style={{ color: 'var(--text-primary)' }}>{title}</h2>
               <button
                 onClick={onClose}
-                className="p-1 hover:bg-bg-secondary rounded-lg transition-colors duration-200"
+                className="p-1 rounded-lg transition-colors duration-200 hover:bg-opacity-50"
+                style={{ backgroundColor: 'var(--bg-tertiary)' }}
               >
-                <X size={20} className="text-text-secondary" />
+                <X size={20} style={{ color: 'var(--text-secondary)' }} />
               </button>
             </div>
           )}
@@ -71,7 +74,7 @@ export const Modal = React.forwardRef(
 
           {/* Footer */}
           {footer && (
-            <div className="flex items-center justify-end gap-3 p-6 border-t border-border-light sticky bottom-0 bg-surface-1">
+            <div className="flex items-center justify-end gap-3 p-6 border-t sticky bottom-0" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--card-bg)' }}>
               {footer}
             </div>
           )}

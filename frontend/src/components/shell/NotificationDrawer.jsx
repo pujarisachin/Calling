@@ -25,25 +25,27 @@ export function NotificationDrawer({ onClose }) {
     <>
       {/* Overlay */}
       <div
-        className="fixed inset-0 bg-black bg-opacity-50 z-modal"
+        className="fixed inset-0 z-modal"
+        style={{ backgroundColor: 'rgba(15, 23, 42, 0.7)' }}
         onClick={onClose}
       />
 
       {/* Drawer */}
-      <div className="fixed right-0 top-16 w-96 max-w-full h-[calc(100vh-4rem)] bg-surface-1 border-l border-border-light overflow-hidden flex flex-col z-tooltip shadow-lg animate-in fade-in slide-in-from-right">
+      <div className="fixed right-0 top-16 w-96 max-w-full h-[calc(100vh-4rem)] border-l overflow-hidden flex flex-col z-tooltip shadow-lg animate-in fade-in slide-in-from-right" style={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)' }}>
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-border-light">
+        <div className="flex items-center justify-between p-4 border-b" style={{ borderColor: 'var(--border-color)' }}>
           <div>
-            <h3 className="font-semibold text-text-primary">Notifications</h3>
+            <h3 className="font-semibold" style={{ color: 'var(--text-primary)' }}>Notifications</h3>
             {unreadCount > 0 && (
-              <p className="text-xs text-text-tertiary">{unreadCount} unread</p>
+              <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>{unreadCount} unread</p>
             )}
           </div>
           <button
             onClick={onClose}
-            className="p-1 hover:bg-bg-secondary rounded transition-colors duration-200"
+            className="p-1 rounded transition-colors duration-200"
+            style={{ backgroundColor: 'var(--bg-tertiary)' }}
           >
-            <X size={20} className="text-text-primary" />
+            <X size={20} style={{ color: 'var(--text-primary)' }} />
           </button>
         </div>
 
@@ -51,9 +53,9 @@ export function NotificationDrawer({ onClose }) {
         <div className="flex-1 overflow-y-auto">
           {notifications.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center p-6">
-              <Info size={40} className="text-text-tertiary mb-3" />
-              <p className="text-text-secondary font-medium">No notifications yet</p>
-              <p className="text-xs text-text-tertiary mt-1">
+              <Info size={40} style={{ color: 'var(--text-tertiary)' }} className="mb-3" />
+              <p className="font-medium" style={{ color: 'var(--text-secondary)' }}>No notifications yet</p>
+              <p className="text-xs mt-1" style={{ color: 'var(--text-tertiary)' }}>
                 You'll see updates here as tests complete
               </p>
             </div>
@@ -62,11 +64,13 @@ export function NotificationDrawer({ onClose }) {
               {notifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className={`p-3 rounded-lg border transition-all duration-200 cursor-pointer group hover:bg-bg-secondary ${
-                    notification.read
-                      ? 'border-border-light bg-transparent'
-                      : 'border-primary bg-bg-secondary'
-                  }`}
+                  className="p-3 rounded-lg border transition-all duration-200 cursor-pointer group"
+                  style={{
+                    borderColor: notification.read ? 'var(--border-color)' : 'var(--color-blue)',
+                    backgroundColor: notification.read ? 'transparent' : 'var(--bg-tertiary)'
+                  }}
+                  onMouseEnter={(e) => !notification.read && (e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)')}
+                  onMouseLeave={(e) => !notification.read && (e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)')}
                   onClick={() => markNotificationRead(notification.id)}
                 >
                   <div className="flex gap-3">
@@ -74,15 +78,15 @@ export function NotificationDrawer({ onClose }) {
                       {iconMap[notification.type || 'info']}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm text-text-primary">
+                      <p className="font-medium text-sm" style={{ color: 'var(--text-primary)' }}>
                         {notification.title}
                       </p>
                       {notification.message && (
-                        <p className="text-xs text-text-secondary mt-1 line-clamp-2">
+                        <p className="text-xs mt-1 line-clamp-2" style={{ color: 'var(--text-secondary)' }}>
                           {notification.message}
                         </p>
                       )}
-                      <p className="text-xs text-text-tertiary mt-2">
+                      <p className="text-xs mt-2" style={{ color: 'var(--text-tertiary)' }}>
                         {formatDistanceToNow(new Date(notification.createdAt), {
                           addSuffix: true,
                         })}
@@ -93,9 +97,10 @@ export function NotificationDrawer({ onClose }) {
                         e.stopPropagation();
                         removeNotification(notification.id);
                       }}
-                      className="flex-shrink-0 p-1 opacity-0 group-hover:opacity-100 hover:bg-error rounded transition-all duration-200"
+                      className="flex-shrink-0 p-1 opacity-0 group-hover:opacity-100 rounded transition-all duration-200"
+                      style={{ backgroundColor: '#EF4444' }}
                     >
-                      <Trash2 size={16} className="text-error" />
+                      <Trash2 size={16} className="text-white" />
                     </button>
                   </div>
 
@@ -106,7 +111,8 @@ export function NotificationDrawer({ onClose }) {
                         e.stopPropagation();
                         notification.action.onClick();
                       }}
-                      className="mt-2 w-full text-xs px-3 py-1.5 bg-primary text-white rounded hover:bg-primary-dark transition-colors duration-200"
+                      className="mt-2 w-full text-xs px-3 py-1.5 rounded transition-colors duration-200 text-white"
+                      style={{ backgroundColor: 'var(--color-blue)' }}
                     >
                       {notification.action.label}
                     </button>
@@ -119,7 +125,7 @@ export function NotificationDrawer({ onClose }) {
 
         {/* Footer Actions */}
         {notifications.length > 0 && (
-          <div className="p-3 border-t border-border-light space-y-2 bg-bg-secondary">
+          <div className="p-3 border-t space-y-2" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-tertiary)' }}>
             <Button
               variant="secondary"
               size="sm"

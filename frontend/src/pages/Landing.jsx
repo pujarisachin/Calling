@@ -49,7 +49,7 @@ export default function Landing() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-inherit overflow-hidden">
+    <div className="min-h-screen text-inherit overflow-hidden" style={{ backgroundImage: 'linear-gradient(135deg, #0F172A 0%, #1A254A 50%, #0F172A 100%)' }}>
       {/* Animated background orbs */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div
