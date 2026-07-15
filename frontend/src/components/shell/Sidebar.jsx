@@ -79,7 +79,7 @@ export function Sidebar() {
               to={item.path}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group font-medium text-sm ${
                 active
-                  ? 'bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 text-white shadow-md'
+                  ? 'bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 text-inherit shadow-md'
                   : 'hover:bg-bg-tertiary'
               }`}
               style={{

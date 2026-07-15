@@ -73,7 +73,7 @@ export function Topbar({ pageTitle = 'Dashboard' }) {
           <div className="relative">
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
-              className="w-10 h-10 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold hover:shadow-lg transition-all duration-200"
+              className="w-10 h-10 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 rounded-full flex items-center justify-center text-inherit font-semibold hover:shadow-lg transition-all duration-200"
             >
               AC
             </button>
