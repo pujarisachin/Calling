@@ -189,9 +189,9 @@ export default function Landing() {
               {FEATURES.map((feature, idx) => {
                 const Icon = feature.icon;
                 const gradients = [
-                  'linear-gradient(135deg, rgba(0, 191, 255, 0.1) 0%, rgba(75, 110, 245, 0.05) 100%)',
-                  'linear-gradient(135deg, rgba(75, 110, 245, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%)',
-                  'linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(0, 191, 255, 0.05) 100%)',
+                  "linear-gradient(135deg, rgba(0, 191, 255, 0.1) 0%, rgba(75, 110, 245, 0.05) 100%)",
+                  "linear-gradient(135deg, rgba(75, 110, 245, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%)",
+                  "linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(0, 191, 255, 0.05) 100%)"
                 ];
                 return (
                   <div
@@ -199,8 +199,8 @@ export default function Landing() {
                     className="group p-8 rounded-2xl border hover:scale-105 hover:border-blue-400/80 shadow-hover animate-fadeInUp transition-all duration-500 backdrop-blur-sm"
                     style={{
                       backgroundImage: gradients[idx % 3],
-                      borderColor: 'rgba(59, 130, 246, 0.3)',
-                      animationDelay: `${idx * 100}ms`,
+                      borderColor: "rgba(59, 130, 246, 0.3)",
+                      animationDelay: (idx * 100) + "ms"
                     }}
                   >
                     <div className="p-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 w-fit rounded-xl mb-4 group-hover:scale-110 transition-transform duration-300">
@@ -215,7 +215,6 @@ export default function Landing() {
           </div>
         </section>
 
-        {/* ROI & Savings Section */}
         <section id="benefits" className="py-24 px-8 relative" style={{ backgroundImage: 'linear-gradient(180deg, rgba(10, 14, 39, 0.5) 0%, rgba(13, 31, 61, 0.3) 50%, rgba(10, 14, 39, 0.5) 100%)' }}>
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-16 animate-fadeInUp">
@@ -228,42 +227,21 @@ export default function Landing() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[
-                {
-                  title: 'Time Saved',
-                  value: '80%',
-                  description: 'Reduce manual testing time from days to hours with autonomous AI-powered voice testing'
-                },
-                {
-                  title: 'Cost Reduction',
-                  value: '75%',
-                  description: 'Eliminate manual QA costs while improving test coverage and accuracy'
-                },
-                {
-                  title: 'Issue Detection',
-                  value: '24/7',
-                  description: 'Continuously test across 10+ languages and detect edge cases humans miss'
-                },
-              ].map((stat, idx) => {
-                const statGradients = [
-                  'linear-gradient(135deg, rgba(0, 191, 255, 0.15) 0%, rgba(75, 110, 245, 0.05) 100%)',
-                  'linear-gradient(135deg, rgba(75, 110, 245, 0.15) 0%, rgba(139, 92, 246, 0.05) 100%)',
-                  'linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(0, 191, 255, 0.05) 100%)',
-                ];
-                return (
-                <div
-                  key={stat.title}
-                  className="p-8 rounded-2xl border hover:scale-105 hover:border-blue-400/80 transition-all duration-300 animate-fadeInUp backdrop-blur-sm"
-                  style={{ backgroundImage: statGradients[idx], borderColor: 'rgba(59, 130, 246, 0.3)', animationDelay: `${idx * 100}ms` }}
-                >
-                  <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: '#B8D4FE' }}>{stat.title}</p>
-                  <p className="text-5xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
-                    {stat.value}
-                  </p>
-                  <p className="text-sm leading-relaxed" style={{ color: '#D1D5DB' }}>{stat.description}</p>
-                </div>
-              );
-              })
+              <div key="1" className="p-8 rounded-2xl border hover:scale-105 hover:border-blue-400/80 transition-all duration-300 animate-fadeInUp backdrop-blur-sm" style={{ backgroundImage: "linear-gradient(135deg, rgba(0, 191, 255, 0.15) 0%, rgba(75, 110, 245, 0.05) 100%)", borderColor: "rgba(59, 130, 246, 0.3)" }}>
+                <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: '#B8D4FE' }}>Time Saved</p>
+                <p className="text-5xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">80%</p>
+                <p className="text-sm leading-relaxed" style={{ color: '#D1D5DB' }}>Reduce manual testing time from days to hours with autonomous AI-powered voice testing</p>
+              </div>
+              <div key="2" className="p-8 rounded-2xl border hover:scale-105 hover:border-blue-400/80 transition-all duration-300 animate-fadeInUp backdrop-blur-sm" style={{ backgroundImage: "linear-gradient(135deg, rgba(75, 110, 245, 0.15) 0%, rgba(139, 92, 246, 0.05) 100%)", borderColor: "rgba(59, 130, 246, 0.3)", animationDelay: "100ms" }}>
+                <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: '#B8D4FE' }}>Cost Reduction</p>
+                <p className="text-5xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">75%</p>
+                <p className="text-sm leading-relaxed" style={{ color: '#D1D5DB' }}>Eliminate manual QA costs while improving test coverage and accuracy</p>
+              </div>
+              <div key="3" className="p-8 rounded-2xl border hover:scale-105 hover:border-blue-400/80 transition-all duration-300 animate-fadeInUp backdrop-blur-sm" style={{ backgroundImage: "linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(0, 191, 255, 0.05) 100%)", borderColor: "rgba(59, 130, 246, 0.3)", animationDelay: "200ms" }}>
+                <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: '#B8D4FE' }}>Issue Detection</p>
+                <p className="text-5xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">24/7</p>
+                <p className="text-sm leading-relaxed" style={{ color: '#D1D5DB' }}>Continuously test across 10+ languages and detect edge cases humans miss</p>
+              </div>
             </div>
           </div>
         </section>
@@ -307,34 +285,37 @@ export default function Landing() {
                   metrics: 'Issue Detection Rate: 98%'
                 },
               ].map((item, idx) => {
-                const workGradients = [
-                  'linear-gradient(135deg, rgba(0, 191, 255, 0.15) 0%, rgba(75, 110, 245, 0.05) 100%)',
-                  'linear-gradient(135deg, rgba(75, 110, 245, 0.15) 0%, rgba(139, 92, 246, 0.05) 100%)',
-                  'linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(0, 191, 255, 0.05) 100%)',
-                  'linear-gradient(135deg, rgba(0, 191, 255, 0.15) 0%, rgba(75, 110, 245, 0.05) 100%)',
+                const gradientMap = [
+                  "linear-gradient(135deg, rgba(0, 191, 255, 0.15) 0%, rgba(75, 110, 245, 0.05) 100%)",
+                  "linear-gradient(135deg, rgba(75, 110, 245, 0.15) 0%, rgba(139, 92, 246, 0.05) 100%)",
+                  "linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(0, 191, 255, 0.05) 100%)"
                 ];
                 return (
-                <div
-                  key={item.step}
-                  className="p-8 rounded-2xl border hover:scale-105 hover:border-cyan-400/80 transition-all duration-300 animate-fadeInUp backdrop-blur-sm"
-                  style={{ backgroundImage: workGradients[idx % 4], borderColor: 'rgba(59, 130, 246, 0.3)', animationDelay: `${idx * 100}ms` }}
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0">
-                      <div className="flex items-center justify-center h-12 w-12 rounded-md bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 text-inherit font-bold text-lg">
-                        {item.step}
+                  <div
+                    key={item.step}
+                    className="p-8 rounded-2xl border hover:scale-105 hover:border-cyan-400/80 transition-all duration-300 animate-fadeInUp backdrop-blur-sm"
+                    style={{
+                      backgroundImage: gradientMap[idx % 3],
+                      borderColor: "rgba(59, 130, 246, 0.3)",
+                      animationDelay: (idx * 100) + "ms"
+                    }}
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0">
+                        <div className="flex items-center justify-center h-12 w-12 rounded-md bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 text-inherit font-bold text-lg">
+                          {item.step}
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-xl font-bold mb-2" style={{ color: '#E8F0FE' }}>{item.title}</h3>
-                      <p className="text-sm mb-3" style={{ color: '#D1D5DB' }}>{item.description}</p>
-                      <div className="pt-3 border-t" style={{ borderColor: 'var(--border-color)' }}>
-                        <p className="text-xs text-cyan-400 font-semibold">{item.metrics}</p>
+                      <div className="flex-1">
+                        <h3 className="text-xl font-bold mb-2" style={{ color: '#E8F0FE' }}>{item.title}</h3>
+                        <p className="text-sm mb-3" style={{ color: '#D1D5DB' }}>{item.description}</p>
+                        <div className="pt-3 border-t" style={{ borderColor: 'var(--border-color)' }}>
+                          <p className="text-xs text-cyan-400 font-semibold">{item.metrics}</p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              );
+                );
               })}
             </div>
           </div>
