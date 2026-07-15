@@ -27,6 +27,16 @@ class TestCase(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
 
 
+class ProviderCredential(Base):
+    __tablename__ = "provider_credentials"
+
+    provider_type: Mapped[str] = mapped_column(String(32), primary_key=True)
+    config: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
+    )
+
+
 class CallSession(Base):
     __tablename__ = "call_sessions"
 

@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import inspect, text
 
+from app.api.routes.providers import router as providers_router
 from app.api.routes.tests import router as tests_router
 from app.api.routes.webhooks import router as webhooks_router
 from app.core.config import get_settings
@@ -54,3 +55,4 @@ def health_check() -> dict:
 
 app.include_router(tests_router)
 app.include_router(webhooks_router)
+app.include_router(providers_router)

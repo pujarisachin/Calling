@@ -3,7 +3,7 @@ from __future__ import annotations
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.core.config import get_settings
+from app.core.credential_resolver import build_effective_settings
 from app.db.database import SessionLocal, get_db
 from app.db.schemas import CallInfoResponse, CreateTestRequest, CreateTestResponse, TestResultResponse
 from app.repositories.test_repository import TestRepository
@@ -18,14 +18,14 @@ router = APIRouter(prefix="/api/tests", tags=["tests"])
 
 
 def _run_test_job(test_id: str) -> None:
-    settings = get_settings()
-    orchestrator = CallOrchestrator(
-        twilio_service=TwilioService(settings),
-        conversation_manager=ConversationManager(OpenAIRealtimeService(settings)),
-        transcript_service=TranscriptService(),
-        analysis_engine=AnalysisEngine(settings),
-    )
     with SessionLocal() as db:
+        settings = build_effective_settings(db)
+        orchestrator = CallOrchestrator(
+            twilio_service=TwilioService(settings),
+            conversation_manager=ConversationManager(OpenAIRealtimeService(settings)),
+            transcript_service=TranscriptService(),
+            analysis_engine=AnalysisEngine(settings),
+        )
         orchestrator.run_test(db, test_id)
 
 
@@ -66,7 +66,7 @@ def end_call(test_id: str, db: Session = Depends(get_db)) -> dict:
     if not call_session.provider_call_sid:
         raise HTTPException(status_code=400, detail="Call has no provider call SID to hang up")
 
-    settings = get_settings()
+    settings = build_effective_settings(db)
     TwilioService(settings).hangup_call(call_session.provider_call_sid)
 
     return {"status": "hangup_requested"}

@@ -7,6 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
+from app.core.credential_resolver import build_effective_settings
 from app.db.database import get_db
 from app.db.models import AnalysisReport, CallSession
 from app.repositories.test_repository import TestRepository
@@ -130,7 +131,7 @@ def _finalize_analysis_if_needed(db: Session, test_id: str) -> None:
         )
         return
 
-    settings = get_settings()
+    settings = build_effective_settings(db)
     analysis_engine = AnalysisEngine(settings)
     analysis_dict = analysis_engine.analyze_conversation(test_case, transcript_rows)
     analysis = ReportGenerator.normalize_analysis(analysis_dict)
