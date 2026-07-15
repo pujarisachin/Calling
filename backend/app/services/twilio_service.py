@@ -155,3 +155,18 @@ class TwilioService:
         except TwilioException as exc:
             logger.warning("Failed to fetch Twilio call status for %s: %s", provider_call_sid, exc)
             return None
+
+    def get_call_recording_url(self, provider_call_sid: str) -> str | None:
+        client = self._build_client()
+        if client is None or provider_call_sid == "SIMULATED_CALL_SID":
+            return None
+
+        try:
+            recordings = client.calls(provider_call_sid).recordings.list(limit=1)
+            if not recordings:
+                return None
+            recording = recordings[0]
+            return f"https://api.twilio.com{recording.uri.replace('.json', '.mp3')}"
+        except TwilioException as exc:
+            logger.warning("Failed to fetch Twilio recording for %s: %s", provider_call_sid, exc)
+            return None

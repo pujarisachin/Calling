@@ -81,11 +81,16 @@ export async function listTests(filters = {}) {
   const params = new URLSearchParams();
   if (filters.skip) params.append("skip", filters.skip);
   if (filters.limit) params.append("limit", filters.limit);
-  if (filters.status) params.append("status", filters.status);
-  if (filters.search) params.append("search", filters.search);
 
   const queryString = params.toString();
   return get(`/api/tests${queryString ? `?${queryString}` : ""}`);
+}
+
+/**
+ * Build the URL for streaming a test's call recording
+ */
+export function getTestRecordingUrl(testId) {
+  return `${API_BASE_URL}/api/tests/${testId}/recording`;
 }
 
 /**

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.db.models import AnalysisReport, CallSession, TestCase
@@ -53,3 +53,15 @@ class TestRepository:
     def get_analysis_report(db: Session, test_id: str) -> AnalysisReport | None:
         stmt = select(AnalysisReport).where(AnalysisReport.test_id == test_id)
         return db.scalar(stmt)
+
+    @staticmethod
+    def list_tests(db: Session, skip: int = 0, limit: int = 50) -> tuple[list[TestCase], int]:
+        total = db.scalar(select(func.count()).select_from(TestCase)) or 0
+        stmt = (
+            select(TestCase)
+            .order_by(TestCase.created_at.desc())
+            .offset(skip)
+            .limit(limit)
+        )
+        items = list(db.scalars(stmt).all())
+        return items, total

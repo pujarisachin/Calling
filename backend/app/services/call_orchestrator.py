@@ -74,6 +74,10 @@ class CallOrchestrator:
                     suggestions=analysis.suggestions,
                     confidence=analysis.confidence,
                     raw_response=analysis.raw_response,
+                    overall_sentiment=analysis.overall_sentiment,
+                    sentiment_score=analysis.sentiment_score,
+                    key_topics=analysis.key_topics,
+                    intent=analysis.intent,
                 )
             )
 
@@ -89,6 +93,11 @@ class CallOrchestrator:
                         "twilio_polled_answered_by": polled.get("answered_by"),
                         "twilio_polled_end_time": polled.get("end_time"),
                     }
+
+            if test_case.enable_recording and call_session.provider_call_sid and not call_session.recording_url:
+                call_session.recording_url = self.twilio_service.get_call_recording_url(
+                    call_session.provider_call_sid
+                )
 
             completed_at = datetime.utcnow()
             call_session.completed_at = completed_at

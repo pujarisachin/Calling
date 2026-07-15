@@ -28,18 +28,33 @@ def _add_missing_columns() -> None:
     # We use create_all (no migration tool), which never alters existing tables —
     # so columns added to models.py after a DB already exists must be patched in here.
     inspector = inspect(engine)
-    if "test_cases" not in inspector.get_table_names():
-        return
-    existing_columns = {col["name"] for col in inspector.get_columns("test_cases")}
-    new_columns = {
-        "test_data": "TEXT",
-        "persona_instructions": "TEXT",
-        "enable_recording": "BOOLEAN NOT NULL DEFAULT 0",
+    table_names = set(inspector.get_table_names())
+
+    patches = {
+        "test_cases": {
+            "test_data": "TEXT",
+            "persona_instructions": "TEXT",
+            "enable_recording": "BOOLEAN NOT NULL DEFAULT 0",
+        },
+        "call_sessions": {
+            "recording_url": "VARCHAR(512)",
+        },
+        "analysis_reports": {
+            "overall_sentiment": "VARCHAR(16) NOT NULL DEFAULT 'Neutral'",
+            "sentiment_score": "INTEGER NOT NULL DEFAULT 50",
+            "key_topics": "JSON DEFAULT '[]'",
+            "intent": "VARCHAR(255) NOT NULL DEFAULT 'Unknown'",
+        },
     }
+
     with engine.begin() as connection:
-        for column_name, column_type in new_columns.items():
-            if column_name not in existing_columns:
-                connection.execute(text(f"ALTER TABLE test_cases ADD COLUMN {column_name} {column_type}"))
+        for table_name, new_columns in patches.items():
+            if table_name not in table_names:
+                continue
+            existing_columns = {col["name"] for col in inspector.get_columns(table_name)}
+            for column_name, column_type in new_columns.items():
+                if column_name not in existing_columns:
+                    connection.execute(text(f"ALTER TABLE {table_name} ADD COLUMN {column_name} {column_type}"))
 
 
 @app.on_event("startup")

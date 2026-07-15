@@ -15,6 +15,7 @@ from app.services.analysis_engine import AnalysisEngine
 from app.services.realtime_bridge_service import RealtimeBridgeService
 from app.services.report_generator import ReportGenerator
 from app.services.transcript_service import TranscriptService
+from app.services.twilio_service import TwilioService
 
 router = APIRouter(prefix="/api/webhooks", tags=["webhooks"])
 
@@ -43,6 +44,12 @@ def twilio_status_callback(
         call_session.duration_seconds = int(call_duration)
 
     if is_terminal:
+        test_case = TestRepository.get_test(db, call_session.test_id)
+        if test_case and test_case.enable_recording and call_session.provider_call_sid and not call_session.recording_url:
+            settings = build_effective_settings(db)
+            call_session.recording_url = TwilioService(settings).get_call_recording_url(
+                call_session.provider_call_sid
+            )
         _finalize_analysis_if_needed(db, call_session.test_id)
 
     db.commit()
@@ -127,6 +134,10 @@ def _finalize_analysis_if_needed(db: Session, test_id: str) -> None:
                 ],
                 confidence=1.0,
                 raw_response=None,
+                overall_sentiment="Neutral",
+                sentiment_score=0,
+                key_topics=[],
+                intent="Unknown",
             )
         )
         return
@@ -148,5 +159,9 @@ def _finalize_analysis_if_needed(db: Session, test_id: str) -> None:
             suggestions=analysis.suggestions,
             confidence=analysis.confidence,
             raw_response=analysis.raw_response,
+            overall_sentiment=analysis.overall_sentiment,
+            sentiment_score=analysis.sentiment_score,
+            key_topics=analysis.key_topics,
+            intent=analysis.intent,
         )
     )

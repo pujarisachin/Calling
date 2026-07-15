@@ -48,7 +48,11 @@ class AnalysisEngine:
             "  },\n"
             "  \"issues\": [{\"category\": string, \"description\": string, \"severity\": \"low|medium|high\"}],\n"
             "  \"suggestions\": [string],\n"
-            "  \"confidence\": 0-1 number\n"
+            "  \"confidence\": 0-1 number,\n"
+            "  \"overall_sentiment\": \"Positive|Neutral|Negative\",\n"
+            "  \"sentiment_score\": 0-100 integer,\n"
+            "  \"key_topics\": [string],\n"
+            "  \"intent\": string\n"
             "}\n\n"
             f"Success criteria: {test_case.success_criteria}\n\n"
             f"Transcript:\n{serialized_transcript}"
@@ -107,6 +111,10 @@ class AnalysisEngine:
             "suggestions": ["Ensure call audio/transcript capture is configured."],
             "confidence": 0.2,
             "raw_response": None,
+            "overall_sentiment": "Neutral",
+            "sentiment_score": 0,
+            "key_topics": [],
+            "intent": "Unknown",
         }
 
     def _fallback_heuristic_result(self, criteria: list[str]) -> dict:
@@ -138,4 +146,8 @@ class AnalysisEngine:
             ],
             "confidence": 0.55,
             "raw_response": None,
+            "overall_sentiment": "Neutral",
+            "sentiment_score": 50,
+            "key_topics": [],
+            "intent": "Unknown",
         }

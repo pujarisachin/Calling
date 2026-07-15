@@ -48,6 +48,10 @@ class AnalysisResult(BaseModel):
     suggestions: list[str]
     confidence: float = Field(ge=0, le=1)
     raw_response: str | None = None
+    overall_sentiment: Literal["Positive", "Neutral", "Negative"] = "Neutral"
+    sentiment_score: int = Field(default=50, ge=0, le=100)
+    key_topics: list[str] = Field(default_factory=list)
+    intent: str = "Unknown"
 
 
 class TranscriptUtteranceResponse(BaseModel):
@@ -66,6 +70,7 @@ class CallInfoResponse(BaseModel):
     completed_at: datetime | None
     metadata: dict
     error_message: str | None
+    has_recording: bool = False
 
 
 class TestResultResponse(BaseModel):
@@ -89,3 +94,20 @@ class CreateTestResponse(BaseModel):
     test_id: str
     status: str
     message: str
+
+
+class TestSummaryResponse(BaseModel):
+    id: str
+    test_name: str
+    created_at: datetime
+    call_status: str | None
+    duration_seconds: int | None
+    overall_sentiment: str | None
+    sentiment_score: int | None
+    score: int | None
+    has_recording: bool = False
+
+
+class TestListResponse(BaseModel):
+    items: list[TestSummaryResponse]
+    total: int

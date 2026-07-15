@@ -49,6 +49,7 @@ class CallSession(Base):
     duration_seconds: Mapped[int | None] = mapped_column(Integer, nullable=True)
     metadata_json: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
     error_message: Mapped[str | None] = mapped_column(Text, nullable=True)
+    recording_url: Mapped[str | None] = mapped_column(String(512), nullable=True)
 
 
 class TranscriptUtterance(Base):
@@ -75,3 +76,7 @@ class AnalysisReport(Base):
     suggestions: Mapped[list[str]] = mapped_column(JSON, nullable=False, default=list)
     confidence: Mapped[float] = mapped_column(Float, nullable=False)
     raw_response: Mapped[str | None] = mapped_column(Text, nullable=True)
+    overall_sentiment: Mapped[str] = mapped_column(String(16), nullable=False, default="Neutral")
+    sentiment_score: Mapped[int] = mapped_column(Integer, nullable=False, default=50)
+    key_topics: Mapped[list[str]] = mapped_column(JSON, nullable=False, default=list)
+    intent: Mapped[str] = mapped_column(String(255), nullable=False, default="Unknown")

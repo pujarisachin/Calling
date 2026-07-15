@@ -1,11 +1,20 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
+import httpx
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, status
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
 from app.core.credential_resolver import build_effective_settings
 from app.db.database import SessionLocal, get_db
-from app.db.schemas import CallInfoResponse, CreateTestRequest, CreateTestResponse, TestResultResponse
+from app.db.schemas import (
+    CallInfoResponse,
+    CreateTestRequest,
+    CreateTestResponse,
+    TestListResponse,
+    TestResultResponse,
+    TestSummaryResponse,
+)
 from app.repositories.test_repository import TestRepository
 from app.services.analysis_engine import AnalysisEngine
 from app.services.call_orchestrator import CallOrchestrator
@@ -57,6 +66,58 @@ def create_test(
     )
 
 
+@router.get("", response_model=TestListResponse)
+def list_tests(
+    skip: int = Query(default=0, ge=0),
+    limit: int = Query(default=50, ge=1, le=200),
+    db: Session = Depends(get_db),
+) -> TestListResponse:
+    test_cases, total = TestRepository.list_tests(db, skip=skip, limit=limit)
+
+    items = []
+    for test_case in test_cases:
+        call_session = TestRepository.get_call_session(db, test_case.id)
+        report = TestRepository.get_analysis_report(db, test_case.id)
+        items.append(
+            TestSummaryResponse(
+                id=test_case.id,
+                test_name=test_case.name,
+                created_at=test_case.created_at,
+                call_status=call_session.status if call_session else None,
+                duration_seconds=call_session.duration_seconds if call_session else None,
+                overall_sentiment=report.overall_sentiment if report else None,
+                sentiment_score=report.sentiment_score if report else None,
+                score=report.score if report else None,
+                has_recording=bool(call_session and call_session.recording_url),
+            )
+        )
+
+    return TestListResponse(items=items, total=total)
+
+
+@router.get("/{test_id}/recording")
+def get_test_recording(test_id: str, db: Session = Depends(get_db)) -> StreamingResponse:
+    call_session = TestRepository.get_call_session(db, test_id)
+    if not call_session or not call_session.recording_url:
+        raise HTTPException(status_code=404, detail="Recording not available")
+
+    settings = build_effective_settings(db)
+    if not settings.twilio_account_sid or not settings.twilio_auth_token:
+        raise HTTPException(status_code=400, detail="Twilio credentials not configured")
+
+    try:
+        response = httpx.get(
+            call_session.recording_url,
+            auth=(settings.twilio_account_sid, settings.twilio_auth_token),
+            timeout=30.0,
+        )
+        response.raise_for_status()
+    except httpx.HTTPError as exc:
+        raise HTTPException(status_code=502, detail=f"Failed to fetch recording: {exc}") from exc
+
+    return StreamingResponse(iter([response.content]), media_type="audio/mpeg")
+
+
 @router.post("/{test_id}/end-call", status_code=status.HTTP_200_OK)
 def end_call(test_id: str, db: Session = Depends(get_db)) -> dict:
     call_session = TestRepository.get_call_session(db, test_id)
@@ -94,6 +155,10 @@ def get_test_result(test_id: str, db: Session = Depends(get_db)) -> TestResultRe
             "suggestions": report.suggestions,
             "confidence": report.confidence,
             "raw_response": report.raw_response,
+            "overall_sentiment": report.overall_sentiment,
+            "sentiment_score": report.sentiment_score,
+            "key_topics": report.key_topics,
+            "intent": report.intent,
         }
 
     return TestResultResponse(
@@ -116,6 +181,7 @@ def get_test_result(test_id: str, db: Session = Depends(get_db)) -> TestResultRe
             completed_at=call_session.completed_at,
             metadata=call_session.metadata_json,
             error_message=call_session.error_message,
+            has_recording=bool(call_session.recording_url),
         )
         if call_session
         else None,
