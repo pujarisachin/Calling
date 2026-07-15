@@ -131,7 +131,7 @@ export default function Landing() {
             </div>
 
             {/* Subheading */}
-            <p className="text-xl max-w-2xl mx-auto leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+            <p className="text-xl max-w-2xl mx-auto leading-relaxed" style={{ color: '#E8F0FE' }}>
               Deploy AI agents to test voice bots at enterprise scale. Real conversations, real insights, zero manual testing. Your QA team's new superpower.
             </p>
 
@@ -159,15 +159,15 @@ export default function Landing() {
             <div className="grid grid-cols-3 gap-8 pt-16 border-t" style={{ borderColor: 'var(--border-color)' }}>
               <div className="space-y-2 animate-slideInLeft" style={{ animationDelay: '200ms' }}>
                 <p className="text-3xl font-bold text-cyan-400">10K+</p>
-                <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>Tests Run Monthly</p>
+                <p className="text-sm" style={{ color: '#B8D4FE' }}>Tests Run Monthly</p>
               </div>
               <div className="space-y-2 animate-slideInLeft" style={{ animationDelay: '400ms' }}>
                 <p className="text-3xl font-bold text-blue-400">94%</p>
-                <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>Average Accuracy</p>
+                <p className="text-sm" style={{ color: '#B8D4FE' }}>Average Accuracy</p>
               </div>
               <div className="space-y-2 animate-slideInLeft" style={{ animationDelay: '600ms' }}>
                 <p className="text-3xl font-bold text-purple-400">50ms</p>
-                <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>Response Time</p>
+                <p className="text-sm" style={{ color: '#B8D4FE' }}>Response Time</p>
               </div>
             </div>
           </div>
@@ -180,7 +180,7 @@ export default function Landing() {
               <h2 className="text-4xl lg:text-5xl font-bold mb-4">
                 Enterprise-Grade Features
               </h2>
-              <p className="text-xl" style={{ color: 'var(--text-secondary)' }}>
+              <p className="text-xl" style={{ color: '#9CA3AF' }}>
                 Everything you need to test voice applications at scale
               </p>
             </div>
@@ -217,7 +217,7 @@ export default function Landing() {
               <h2 className="text-4xl lg:text-5xl font-bold mb-4">
                 Real Results. Measurable Impact.
               </h2>
-              <p className="text-lg" style={{ color: 'var(--text-secondary)' }}>
+              <p className="text-lg" style={{ color: '#D1D5DB' }}>
                 See how PhantomCaller transforms your testing efficiency
               </p>
             </div>
@@ -263,7 +263,7 @@ export default function Landing() {
               <h2 className="text-4xl lg:text-5xl font-bold mb-4">
                 How It Works
               </h2>
-              <p className="text-lg" style={{ color: 'var(--text-secondary)' }}>
+              <p className="text-lg" style={{ color: '#D1D5DB' }}>
                 Understand the PhantomCaller advantage
               </p>
             </div>
@@ -325,7 +325,7 @@ export default function Landing() {
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12 animate-fadeInUp">
               <h2 className="text-4xl lg:text-5xl font-bold mb-4">The PhantomCaller Advantage</h2>
-              <p className="text-lg" style={{ color: 'var(--text-secondary)' }}>See how we revolutionize voice bot testing</p>
+              <p className="text-lg" style={{ color: '#D1D5DB' }}>See how we revolutionize voice bot testing</p>
             </div>
             <img
               src={storyImage}
@@ -340,7 +340,7 @@ export default function Landing() {
         <section className="py-20 px-8 bg-gradient-to-r from-cyan-600 via-blue-600 to-purple-600 text-inherit">
           <div className="max-w-3xl mx-auto text-center animate-fadeInUp">
             <h2 className="text-4xl font-bold mb-6">Ready to Transform Testing?</h2>
-            <p className="text-lg mb-8" style={{ color: 'var(--text-secondary)' }}>
+            <p className="text-lg mb-8" style={{ color: '#F5F3FF' }}>
               Join enterprise teams automating voice testing at scale.
             </p>
             <Button
