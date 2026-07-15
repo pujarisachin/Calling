@@ -120,18 +120,18 @@ export default function Landing() {
 
             {/* Main Headline */}
             <div className="space-y-4">
-              <h1 className="text-5xl lg:text-6xl font-bold leading-tight text-inherit">
+              <h1 className="text-5xl lg:text-6xl font-bold leading-tight" style={{ color: '#E8F0FE' }}>
                 AI-Powered
               </h1>
               <h1 className="text-6xl lg:text-7xl font-bold leading-tight gradient-text px-2">
                 <span className="block">Voice</span>
                 <span className="block">Testing at Scale</span>
               </h1>
-              <p className="text-2xl" style={{ color: 'var(--text-secondary)' }}>Before your customers call, we do.</p>
+              <p className="text-2xl" style={{ color: '#E8F0FE' }}>Before your customers call, we do.</p>
             </div>
 
             {/* Subheading */}
-            <p className="text-xl max-w-2xl mx-auto leading-relaxed" style={{ color: '#E8F0FE' }}>
+            <p className="text-xl max-w-2xl mx-auto leading-relaxed" style={{ color: '#D1D5DB' }}>
               Deploy AI agents to test voice bots at enterprise scale. Real conversations, real insights, zero manual testing. Your QA team's new superpower.
             </p>
 
@@ -159,15 +159,15 @@ export default function Landing() {
             <div className="grid grid-cols-3 gap-8 pt-16 border-t" style={{ borderColor: 'var(--border-color)' }}>
               <div className="space-y-2 animate-slideInLeft" style={{ animationDelay: '200ms' }}>
                 <p className="text-3xl font-bold text-cyan-400">10K+</p>
-                <p className="text-sm" style={{ color: '#B8D4FE' }}>Tests Run Monthly</p>
+                <p className="text-sm" style={{ color: '#D1D5DB' }}>Tests Run Monthly</p>
               </div>
               <div className="space-y-2 animate-slideInLeft" style={{ animationDelay: '400ms' }}>
                 <p className="text-3xl font-bold text-blue-400">94%</p>
-                <p className="text-sm" style={{ color: '#B8D4FE' }}>Average Accuracy</p>
+                <p className="text-sm" style={{ color: '#D1D5DB' }}>Average Accuracy</p>
               </div>
               <div className="space-y-2 animate-slideInLeft" style={{ animationDelay: '600ms' }}>
                 <p className="text-3xl font-bold text-purple-400">50ms</p>
-                <p className="text-sm" style={{ color: '#B8D4FE' }}>Response Time</p>
+                <p className="text-sm" style={{ color: '#D1D5DB' }}>Response Time</p>
               </div>
             </div>
           </div>
@@ -180,7 +180,7 @@ export default function Landing() {
               <h2 className="text-4xl lg:text-5xl font-bold mb-4">
                 Enterprise-Grade Features
               </h2>
-              <p className="text-xl" style={{ color: '#9CA3AF' }}>
+              <p className="text-xl" style={{ color: '#D1D5DB' }}>
                 Everything you need to test voice applications at scale
               </p>
             </div>
@@ -201,8 +201,8 @@ export default function Landing() {
                     <div className="p-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 w-fit rounded-xl mb-4 group-hover:scale-110 transition-transform duration-300">
                       <Icon size={24} className="text-inherit" />
                     </div>
-                    <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>{feature.title}</h3>
-                    <p style={{ color: 'var(--text-tertiary)' }}>{feature.description}</p>
+                    <h3 className="text-xl font-bold mb-2" style={{ color: '#E8F0FE' }}>{feature.title}</h3>
+                    <p style={{ color: '#D1D5DB' }}>{feature.description}</p>
                   </div>
                 );
               })}
@@ -245,11 +245,11 @@ export default function Landing() {
                   className="p-8 rounded-2xl border hover:border-blue-500/50 transition-all duration-300 animate-fadeInUp"
                   style={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)', animationDelay: `${idx * 100}ms` }}
                 >
-                  <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: 'var(--text-tertiary)' }}>{stat.title}</p>
+                  <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: '#B8D4FE' }}>{stat.title}</p>
                   <p className="text-5xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
                     {stat.value}
                   </p>
-                  <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{stat.description}</p>
+                  <p className="text-sm leading-relaxed" style={{ color: '#D1D5DB' }}>{stat.description}</p>
                 </div>
               ))}
             </div>
@@ -307,8 +307,8 @@ export default function Landing() {
                       </div>
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>{item.title}</h3>
-                      <p className="text-sm mb-3" style={{ color: 'var(--text-tertiary)' }}>{item.description}</p>
+                      <h3 className="text-xl font-bold mb-2" style={{ color: '#E8F0FE' }}>{item.title}</h3>
+                      <p className="text-sm mb-3" style={{ color: '#D1D5DB' }}>{item.description}</p>
                       <div className="pt-3 border-t" style={{ borderColor: 'var(--border-color)' }}>
                         <p className="text-xs text-cyan-400 font-semibold">{item.metrics}</p>
                       </div>
