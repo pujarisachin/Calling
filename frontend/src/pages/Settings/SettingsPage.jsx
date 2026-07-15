@@ -21,12 +21,12 @@ function ProfileTab() {
         <CardContent>
           <div className="space-y-6">
             <div className="flex items-center gap-4 pb-6 border-b" style={{ borderColor: 'var(--border-color)' }}>
-              <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg">
+              <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 rounded-full flex items-center justify-center text-inherit font-bold text-xl shadow-lg">
                 AC
               </div>
               <div>
-                <p className="font-semibold text-slate-100">AI Caller</p>
-                <p className="text-sm text-slate-400">Platform Admin</p>
+                <p className="font-semibold text-inherit">AI Caller</p>
+                <p className="text-sm text-inherit">Platform Admin</p>
               </div>
             </div>
 
@@ -92,7 +92,7 @@ function APIKeysTab() {
           <CardContent>
             <div className="space-y-4 pt-4">
               <div>
-                <p className="text-xs text-slate-400 uppercase tracking-wider font-medium mb-2">API Key</p>
+                <p className="text-xs text-inherit uppercase tracking-wider font-medium mb-2">API Key</p>
                 <div className="flex items-center gap-2">
                   <code className="flex-1 p-3 border rounded text-xs font-mono" style={{ backgroundColor: 'var(--input-bg)', borderColor: 'var(--border-color)', color: 'var(--text-secondary)' }}>
                     {apiKey.key}
@@ -148,8 +148,8 @@ function NotificationsTab() {
           <CardContent className="py-0">
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium text-slate-100">{item.label}</p>
-                <p className="text-sm text-slate-400 mt-1">{item.desc}</p>
+                <p className="font-medium text-inherit">{item.label}</p>
+                <p className="text-sm text-inherit mt-1">{item.desc}</p>
               </div>
               <label className="flex items-center gap-2 cursor-pointer shrink-0">
                 <input

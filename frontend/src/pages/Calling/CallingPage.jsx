@@ -601,10 +601,10 @@ export default function CallingPage() {
               <Card className="h-full flex items-center justify-center p-6 border border animate-scaleIn" style={{ animationDelay: '200ms' }}>
                 <CardContent className="text-center">
                   <div className="p-4 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 rounded-xl w-fit mx-auto mb-4 opacity-80">
-                    <Phone size={48} className="text-white" />
+                    <Phone size={48} className="text-inherit" />
                   </div>
                   <p className="text-text-secondary font-medium">Create a test to begin monitoring</p>
-                  <p className="text-slate-500 text-sm mt-2">Your live call transcripts will appear here</p>
+                  <p className="text-inherit text-sm mt-2">Your live call transcripts will appear here</p>
                 </CardContent>
               </Card>
             )}

@@ -106,7 +106,7 @@ export default function DocumentationPage() {
           <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
             PhantomCaller Documentation
           </h1>
-          <p className="text-slate-400">Complete guide to understand ROI, savings, and implementation details</p>
+          <p className="text-inherit">Complete guide to understand ROI, savings, and implementation details</p>
         </div>
 
         {/* ROI Metrics */}
@@ -123,21 +123,21 @@ export default function DocumentationPage() {
                 style={{ animationDelay: `${150 + idx * 50}ms` }}
               >
                 <div className="space-y-3">
-                  <h3 className="font-semibold text-white">{item.metric}</h3>
+                  <h3 className="font-semibold text-inherit">{item.metric}</h3>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-xs text-slate-400 mb-1">Manual Approach</p>
-                      <p className="text-lg font-bold text-slate-300">{item.old}</p>
+                      <p className="text-xs text-inherit mb-1">Manual Approach</p>
+                      <p className="text-lg font-bold text-inherit">{item.old}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-slate-400 mb-1">PhantomCaller</p>
+                      <p className="text-xs text-inherit mb-1">PhantomCaller</p>
                       <p className="text-lg font-bold text-cyan-400">{item.new}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 pt-3 border-t border-slate-600/50">
                     <Badge variant="success">Savings: {item.saved}</Badge>
                   </div>
-                  <p className="text-xs text-slate-400">{item.description}</p>
+                  <p className="text-xs text-inherit">{item.description}</p>
                 </div>
               </Card>
             ))}
@@ -161,12 +161,12 @@ export default function DocumentationPage() {
                 >
                   <div className="flex items-start gap-4">
                     <div className="p-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 rounded-lg">
-                      <Icon size={20} className="text-white" />
+                      <Icon size={20} className="text-inherit" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-white">{item.scenario}</h3>
+                      <h3 className="font-semibold text-inherit">{item.scenario}</h3>
                       <p className="text-2xl font-bold text-cyan-400 mt-2">{item.time}</p>
-                      <p className="text-sm text-slate-400 mt-2">{item.description}</p>
+                      <p className="text-sm text-inherit mt-2">{item.description}</p>
                     </div>
                   </div>
                 </Card>
@@ -187,19 +187,19 @@ export default function DocumentationPage() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-slate-600/50">
-                      <th className="text-left py-4 px-4 font-semibold text-slate-400 uppercase text-xs">Team Size</th>
-                      <th className="text-left py-4 px-4 font-semibold text-slate-400 uppercase text-xs">Tests/Month</th>
-                      <th className="text-left py-4 px-4 font-semibold text-slate-400 uppercase text-xs">Manual Cost</th>
-                      <th className="text-left py-4 px-4 font-semibold text-slate-400 uppercase text-xs">PhantomCaller</th>
-                      <th className="text-left py-4 px-4 font-semibold text-slate-400 uppercase text-xs">Monthly Savings</th>
-                      <th className="text-left py-4 px-4 font-semibold text-slate-400 uppercase text-xs">Payback Period</th>
+                      <th className="text-left py-4 px-4 font-semibold text-inherit uppercase text-xs">Team Size</th>
+                      <th className="text-left py-4 px-4 font-semibold text-inherit uppercase text-xs">Tests/Month</th>
+                      <th className="text-left py-4 px-4 font-semibold text-inherit uppercase text-xs">Manual Cost</th>
+                      <th className="text-left py-4 px-4 font-semibold text-inherit uppercase text-xs">PhantomCaller</th>
+                      <th className="text-left py-4 px-4 font-semibold text-inherit uppercase text-xs">Monthly Savings</th>
+                      <th className="text-left py-4 px-4 font-semibold text-inherit uppercase text-xs">Payback Period</th>
                     </tr>
                   </thead>
                   <tbody>
                     {COST_CALCULATOR.scenarios.map((scenario, idx) => (
                       <tr key={scenario.name} className="border-b border-slate-700/50 hover:bg-slate-700/20 transition-colors">
-                        <td className="py-4 px-4 font-medium text-white">{scenario.name}</td>
-                        <td className="py-4 px-4 text-slate-300">{scenario.tests_per_month.toLocaleString()}</td>
+                        <td className="py-4 px-4 font-medium text-inherit">{scenario.name}</td>
+                        <td className="py-4 px-4 text-inherit">{scenario.tests_per_month.toLocaleString()}</td>
                         <td className="py-4 px-4 text-red-400 font-semibold">${scenario.manual_cost.toLocaleString()}</td>
                         <td className="py-4 px-4 text-cyan-400 font-semibold">${scenario.phantom_cost.toLocaleString()}</td>
                         <td className="py-4 px-4">
@@ -215,7 +215,7 @@ export default function DocumentationPage() {
                   </tbody>
                 </table>
               </div>
-              <p className="text-xs text-slate-400 mt-4">
+              <p className="text-xs text-inherit mt-4">
                 * Based on average QA salary of $20/hour. Costs vary by region and team structure.
               </p>
             </CardContent>
@@ -270,15 +270,15 @@ export default function DocumentationPage() {
               >
                 <div className="flex gap-4">
                   <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 text-white font-bold">
+                    <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 text-inherit font-bold">
                       {item.step}
                     </div>
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-bold text-white text-lg mb-3">{item.title}</h3>
+                    <h3 className="font-bold text-inherit text-lg mb-3">{item.title}</h3>
                     <ul className="space-y-2">
                       {item.details.map((detail) => (
-                        <li key={detail} className="text-slate-300 text-sm flex items-start gap-2">
+                        <li key={detail} className="text-inherit text-sm flex items-start gap-2">
                           <span className="text-cyan-400 mt-1">•</span>
                           {detail}
                         </li>
@@ -333,8 +333,8 @@ export default function DocumentationPage() {
                 style={{ animationDelay: `${550 + idx * 50}ms` }}
               >
                 <div className="text-4xl mb-3">{feature.icon}</div>
-                <h3 className="font-bold text-white mb-2">{feature.title}</h3>
-                <p className="text-sm text-slate-400">{feature.description}</p>
+                <h3 className="font-bold text-inherit mb-2">{feature.title}</h3>
+                <p className="text-sm text-inherit">{feature.description}</p>
               </Card>
             ))}
           </div>
@@ -381,15 +381,15 @@ export default function DocumentationPage() {
                   onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--bg-tertiary)'}
                   onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
                 >
-                  <h3 className="font-semibold text-white text-left">{faq.q}</h3>
+                  <h3 className="font-semibold text-inherit text-left">{faq.q}</h3>
                   {expandedFAQ === idx ? (
                     <ChevronUp size={20} className="text-cyan-400 flex-shrink-0" />
                   ) : (
-                    <ChevronDown size={20} className="text-slate-400 flex-shrink-0" />
+                    <ChevronDown size={20} className="text-inherit flex-shrink-0" />
                   )}
                 </button>
                 {expandedFAQ === idx && (
-                  <div className="px-6 pb-6 border-t border-slate-600/50 text-slate-300">
+                  <div className="px-6 pb-6 border-t border-slate-600/50 text-inherit">
                     {faq.a}
                   </div>
                 )}
@@ -401,8 +401,8 @@ export default function DocumentationPage() {
         {/* CTA */}
         <section className="animate-fadeInUp text-center" style={{ animationDelay: '700ms' }}>
           <Card className="p-12 bg-gradient-to-r from-cyan-600 via-blue-600 to-purple-600 border-0">
-            <h2 className="text-3xl font-bold text-white mb-4">Ready to Transform Your Testing?</h2>
-            <p className="text-lg text-slate-100 mb-8 max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold text-inherit mb-4">Ready to Transform Your Testing?</h2>
+            <p className="text-lg text-inherit mb-8 max-w-2xl mx-auto">
               Join enterprise teams saving thousands monthly with PhantomCaller's autonomous AI voice testing.
             </p>
             <Button variant="secondary" size="lg" className="gap-2 shadow-lg">

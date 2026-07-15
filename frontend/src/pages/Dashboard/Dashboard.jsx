@@ -46,7 +46,7 @@ function StatCard({ icon: Icon, label, value, unit = '', trend = 0 }) {
           )}
         </div>
         <div className="p-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 rounded-xl group-hover:scale-110 transition-transform duration-300 shadow-lg">
-          <Icon size={24} className="text-white" />
+          <Icon size={24} className="text-inherit" />
         </div>
       </div>
     </Card>

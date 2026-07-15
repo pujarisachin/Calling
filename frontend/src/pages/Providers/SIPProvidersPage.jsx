@@ -194,7 +194,7 @@ export default function SIPProvidersPage() {
           >
             <CardContent className="flex flex-col items-center justify-center h-full py-8">
               <div className="p-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 rounded-lg group-hover:scale-110 transition-transform duration-300 mb-3 opacity-70">
-                <Plus size={32} className="text-white" />
+                <Plus size={32} className="text-inherit" />
               </div>
               <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>Add Provider</p>
               <p className="text-xs mt-1 text-center" style={{ color: 'var(--text-tertiary)' }}>Click to configure a new SIP provider</p>

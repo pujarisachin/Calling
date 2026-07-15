@@ -49,7 +49,7 @@ export default function Landing() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-inherit overflow-hidden">
       {/* Animated background orbs */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div
@@ -94,9 +94,9 @@ export default function Landing() {
             </div>
 
             <div className="flex items-center gap-6">
-              <a href="#features" className="text-slate-300 hover:text-white transition duration-300">Features</a>
-              <a href="#benefits" className="text-slate-300 hover:text-white transition duration-300">Benefits</a>
-              <a href="#docs" className="text-slate-300 hover:text-white transition duration-300">How It Works</a>
+              <a href="#features" className="text-slate-300 hover:text-inherit transition duration-300">Features</a>
+              <a href="#benefits" className="text-slate-300 hover:text-inherit transition duration-300">Benefits</a>
+              <a href="#docs" className="text-slate-300 hover:text-inherit transition duration-300">How It Works</a>
               <Button
                 variant="primary"
                 size="sm"
@@ -120,7 +120,7 @@ export default function Landing() {
 
             {/* Main Headline */}
             <div className="space-y-4">
-              <h1 className="text-5xl lg:text-6xl font-bold leading-tight text-white">
+              <h1 className="text-5xl lg:text-6xl font-bold leading-tight text-inherit">
                 AI-Powered
               </h1>
               <h1 className="text-6xl lg:text-7xl font-bold leading-tight gradient-text">
@@ -196,7 +196,7 @@ export default function Landing() {
                     }}
                   >
                     <div className="p-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 w-fit rounded-xl mb-4 group-hover:scale-110 transition-transform duration-300">
-                      <Icon size={24} className="text-white" />
+                      <Icon size={24} className="text-inherit" />
                     </div>
                     <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
                     <p className="text-slate-400">{feature.description}</p>
@@ -299,12 +299,12 @@ export default function Landing() {
                 >
                   <div className="flex items-start gap-4">
                     <div className="flex-shrink-0">
-                      <div className="flex items-center justify-center h-12 w-12 rounded-md bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 text-white font-bold text-lg">
+                      <div className="flex items-center justify-center h-12 w-12 rounded-md bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 text-inherit font-bold text-lg">
                         {item.step}
                       </div>
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-bold text-white mb-2">{item.title}</h3>
+                      <h3 className="text-xl font-bold text-inherit mb-2">{item.title}</h3>
                       <p className="text-slate-400 text-sm mb-3">{item.description}</p>
                       <div className="pt-3 border-t border-slate-600/50">
                         <p className="text-xs text-cyan-400 font-semibold">{item.metrics}</p>
@@ -334,7 +334,7 @@ export default function Landing() {
         </section>
 
         {/* CTA Footer */}
-        <section className="py-20 px-8 bg-gradient-to-r from-cyan-600 via-blue-600 to-purple-600 text-white">
+        <section className="py-20 px-8 bg-gradient-to-r from-cyan-600 via-blue-600 to-purple-600 text-inherit">
           <div className="max-w-3xl mx-auto text-center animate-fadeInUp">
             <h2 className="text-4xl font-bold mb-6">Ready to Transform Testing?</h2>
             <p className="text-lg mb-8 text-slate-100">

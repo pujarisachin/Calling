@@ -87,7 +87,7 @@ export default function ConversationIntelligencePage() {
           <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
             Conversation Intelligence
           </h1>
-          <p className="text-slate-400">Advanced analytics, sentiment analysis & conversation history</p>
+          <p className="text-inherit">Advanced analytics, sentiment analysis & conversation history</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -95,11 +95,11 @@ export default function ConversationIntelligencePage() {
           <div className="lg:col-span-1 animate-fadeInUp" style={{ animationDelay: '50ms' }}>
             <Card className="p-0 border border overflow-hidden h-full">
               <div className="p-4 border-b border-color bg-input-bg">
-                <h3 className="font-semibold text-white flex items-center gap-2">
+                <h3 className="font-semibold text-inherit flex items-center gap-2">
                   <MessageSquare size={18} />
                   Past Conversations
                 </h3>
-                <p className="text-xs text-slate-400 mt-1">Select to view analytics</p>
+                <p className="text-xs text-inherit mt-1">Select to view analytics</p>
               </div>
               <div className="overflow-y-auto max-h-[600px]">
                 {PAST_CONVERSATIONS.map((conv) => (
@@ -112,9 +112,9 @@ export default function ConversationIntelligencePage() {
                         : 'hover:bg-bg-tertiary'
                     }`}
                   >
-                    <p className="text-sm font-medium text-white line-clamp-2">{conv.name}</p>
+                    <p className="text-sm font-medium text-inherit line-clamp-2">{conv.name}</p>
                     <div className="mt-2 space-y-1">
-                      <div className="flex items-center gap-2 text-xs text-slate-400">
+                      <div className="flex items-center gap-2 text-xs text-inherit">
                         <Clock size={12} />
                         {conv.date} • {conv.time}
                       </div>
@@ -141,7 +141,7 @@ export default function ConversationIntelligencePage() {
                     <Volume2 size={20} />
                     Call Recording
                   </span>
-                  <span className="text-xs text-slate-400 font-normal">
+                  <span className="text-xs text-inherit font-normal">
                     {currentConversation?.duration}
                   </span>
                 </CardTitle>
@@ -154,22 +154,22 @@ export default function ConversationIntelligencePage() {
                       className="flex-shrink-0 p-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 rounded-full hover:scale-110 transition-transform"
                     >
                       {isPlaying ? (
-                        <Pause size={20} className="text-white" />
+                        <Pause size={20} className="text-inherit" />
                       ) : (
-                        <Play size={20} className="text-white ml-0.5" />
+                        <Play size={20} className="text-inherit ml-0.5" />
                       )}
                     </button>
                     <div className="flex-1">
                       <div className="h-2 bg-bg-tertiary rounded-full overflow-hidden">
                         <div className="h-full bg-gradient-to-r from-cyan-500 to-purple-500 w-1/3 shadow-glow" />
                       </div>
-                      <div className="flex justify-between mt-2 text-xs text-slate-400">
+                      <div className="flex justify-between mt-2 text-xs text-inherit">
                         <span>1:45</span>
                         <span>{currentConversation?.duration}</span>
                       </div>
                     </div>
                   </div>
-                  <p className="text-xs text-slate-400 text-center">
+                  <p className="text-xs text-inherit text-center">
                     🎧 Click play to listen to the recording or download for offline review
                   </p>
                 </div>
@@ -193,11 +193,11 @@ export default function ConversationIntelligencePage() {
                         <Badge variant={item.speaker === 'Caller' ? 'primary' : 'default'} size="sm" className="uppercase font-bold">
                           {item.speaker}
                         </Badge>
-                        <span className="text-xs text-slate-400">
+                        <span className="text-xs text-inherit">
                           {new Date(item.timestamp).toLocaleTimeString()}
                         </span>
                       </div>
-                      <p className="text-sm text-slate-200">{item.text}</p>
+                      <p className="text-sm text-inherit">{item.text}</p>
                     </div>
                   ))}
                 </div>
@@ -252,8 +252,8 @@ export default function ConversationIntelligencePage() {
                 <CardTitle className="text-gradient">Intent Detected</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-slate-200 font-medium">{sampleData.intent_detected}</p>
-                <p className="text-xs text-slate-400 mt-3 flex items-center gap-2">
+                <p className="text-sm text-inherit font-medium">{sampleData.intent_detected}</p>
+                <p className="text-xs text-inherit mt-3 flex items-center gap-2">
                   <span className="w-2 h-2 bg-blue-400 rounded-full" />
                   Confidence: {Math.round(sampleData.confidence * 100)}%
                 </p>
@@ -266,7 +266,7 @@ export default function ConversationIntelligencePage() {
                 <CardTitle className="text-gradient">Call Summary</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-slate-300 leading-relaxed">{sampleData.summary}</p>
+                <p className="text-sm text-inherit leading-relaxed">{sampleData.summary}</p>
               </CardContent>
             </Card>
 
