@@ -357,7 +357,7 @@ export default function Landing() {
 
         {/* Footer */}
         <footer className="py-8 px-8 border-t text-center text-sm" style={{ borderColor: 'var(--border-color)', color: 'var(--text-tertiary)' }}>
-          <p>&copy; 2024 PhantomCaller. All rights reserved.</p>
+          <p>&copy; 2026 PhantomCaller. All rights reserved.</p>
           <p className="mt-2">Autonomous Voice Testing, Redefined.</p>
         </footer>
       </div>
