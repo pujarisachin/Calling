@@ -524,7 +524,7 @@ export default function CallingPage() {
   const [loading, setLoading] = useState(false);
   const [currentTestId, setCurrentTestId] = useState(testId || null);
   const [result, setResult] = useState(null);
-  const [showResults, setShowResults] = useState(!!testId);
+  const [showResults, setShowResults] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('en-US');
   const { success, error } = useNotifications();
 
