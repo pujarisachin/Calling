@@ -45,14 +45,14 @@ const SAMPLE_PROVIDERS = [
 
 function ProviderCard({ provider, onEdit, onTest, onDelete }) {
   return (
-    <Card className="group p-6 bg-gradient-to-br from-slate-700/40 to-slate-800/40 border border-slate-600/50 hover:border-blue-500/50 hover:shadow-lg transition-all duration-300 hover:scale-105 animate-fadeInUp overflow-hidden relative">
+    <Card className="group p-6 border hover:border-blue-500/50 hover:shadow-lg transition-all duration-300 hover:scale-105 animate-fadeInUp overflow-hidden relative" style={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)' }}>
       {/* Gradient background effect */}
       <div className="absolute inset-0 bg-gradient-to-br from-cyan-500 via-blue-500 to-purple-500 opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-2xl" />
 
       <div className="relative">
         <CardHeader className="pb-4">
           <div className="flex items-start justify-between">
-            <CardTitle className="text-lg font-bold text-slate-100">{provider.name}</CardTitle>
+            <CardTitle className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>{provider.name}</CardTitle>
             <Badge variant={provider.status === 'Connected' ? 'success' : 'error'} size="sm" className="uppercase text-xs font-bold tracking-wide">
               {provider.status === 'Connected' ? <Check size={14} /> : <X size={14} />}
               {provider.status}
@@ -61,16 +61,16 @@ function ProviderCard({ provider, onEdit, onTest, onDelete }) {
         </CardHeader>
         <CardContent>
           <div className="space-y-4 text-sm">
-            <div className="p-3 bg-slate-700/30 rounded-lg border border-slate-600/30">
-              <p className="text-slate-400 text-xs uppercase tracking-wider font-medium">Account SID</p>
-              <p className="text-slate-200 font-mono truncate mt-1 text-xs">{provider.account_sid || '—'}</p>
+            <div className="p-3 rounded-lg border" style={{ backgroundColor: 'var(--bg-tertiary)', borderColor: 'var(--border-color)' }}>
+              <p className="text-xs uppercase tracking-wider font-medium" style={{ color: 'var(--text-tertiary)' }}>Account SID</p>
+              <p className="font-mono truncate mt-1 text-xs" style={{ color: 'var(--text-secondary)' }}>{provider.account_sid || '—'}</p>
             </div>
-            <div className="p-3 bg-slate-700/30 rounded-lg border border-slate-600/30">
-              <p className="text-slate-400 text-xs uppercase tracking-wider font-medium">Phone Number</p>
-              <p className="text-slate-200 mt-1">{provider.phone_number || '—'}</p>
+            <div className="p-3 rounded-lg border" style={{ backgroundColor: 'var(--bg-tertiary)', borderColor: 'var(--border-color)' }}>
+              <p className="text-xs uppercase tracking-wider font-medium" style={{ color: 'var(--text-tertiary)' }}>Phone Number</p>
+              <p className="mt-1" style={{ color: 'var(--text-secondary)' }}>{provider.phone_number || '—'}</p>
             </div>
 
-            <div className="flex gap-2 pt-4 border-t border-slate-600/50">
+            <div className="flex gap-2 pt-4 border-t" style={{ borderColor: 'var(--border-color)' }}>
               <Button variant="secondary" size="sm" fullWidth onClick={() => onTest(provider)} className="shadow-md">
                 Test Connection
               </Button>
@@ -157,12 +157,12 @@ export default function SIPProvidersPage() {
           <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
             SIP Providers
           </h1>
-          <p className="text-slate-400">Configure and manage your SIP providers for outbound calling</p>
+          <p style={{ color: 'var(--text-tertiary)' }}>Configure and manage your SIP providers for outbound calling</p>
         </div>
 
         <div className="flex items-center justify-between animate-slideInRight" style={{ animationDelay: '100ms' }}>
           <div>
-            <p className="text-sm text-slate-400">
+            <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>
               Seamlessly integrate Twilio, Plivo, Vonage, Nice CXone, and enterprise VoIP providers
             </p>
           </div>
@@ -186,16 +186,18 @@ export default function SIPProvidersPage() {
 
           {/* Add New Card */}
           <Card
-            className="p-6 border-2 border-dashed border-slate-600/50 hover:border-blue-500/50 cursor-pointer transition-all hover:bg-slate-700/20 animate-fadeInUp group"
-            style={{ animationDelay: `${providers.length * 100}ms` }}
+            className="p-6 border-2 border-dashed hover:border-blue-500/50 cursor-pointer transition-all animate-fadeInUp group"
+            style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--card-bg)', animationDelay: `${providers.length * 100}ms` }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--card-bg)'}
             onClick={() => handleOpenModal()}
           >
             <CardContent className="flex flex-col items-center justify-center h-full py-8">
               <div className="p-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 rounded-lg group-hover:scale-110 transition-transform duration-300 mb-3 opacity-70">
                 <Plus size={32} className="text-white" />
               </div>
-              <p className="text-sm font-medium text-slate-200">Add Provider</p>
-              <p className="text-xs text-slate-400 mt-1 text-center">Click to configure a new SIP provider</p>
+              <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>Add Provider</p>
+              <p className="text-xs mt-1 text-center" style={{ color: 'var(--text-tertiary)' }}>Click to configure a new SIP provider</p>
             </CardContent>
           </Card>
         </div>

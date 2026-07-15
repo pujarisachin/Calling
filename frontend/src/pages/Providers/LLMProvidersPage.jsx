@@ -35,7 +35,7 @@ function ProviderCard({ provider, onCopy, onToggle, onDelete }) {
   };
 
   return (
-    <Card className="group p-6 bg-gradient-to-br from-slate-700/40 to-slate-800/40 border border-slate-600/50 hover:border-blue-500/50 hover:shadow-lg transition-all duration-300 hover:scale-105 animate-fadeInUp overflow-hidden relative">
+    <Card className="group p-6 border hover:border-blue-500/50 hover:shadow-lg transition-all duration-300 hover:scale-105 animate-fadeInUp overflow-hidden relative" style={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)' }}>
       {/* Gradient background effect */}
       <div className="absolute inset-0 bg-gradient-to-br from-cyan-500 via-blue-500 to-purple-500 opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-2xl" />
 
@@ -43,8 +43,8 @@ function ProviderCard({ provider, onCopy, onToggle, onDelete }) {
         <CardHeader className="pb-4">
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1">
-              <CardTitle className="text-lg font-bold text-slate-100">{provider.name}</CardTitle>
-              <p className="text-xs text-slate-400 mt-2 font-mono">{provider.model}</p>
+              <CardTitle className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>{provider.name}</CardTitle>
+              <p className="text-xs mt-2 font-mono" style={{ color: 'var(--text-tertiary)' }}>{provider.model}</p>
             </div>
             <label className="flex items-center gap-2 cursor-pointer shrink-0">
               <input
@@ -53,7 +53,7 @@ function ProviderCard({ provider, onCopy, onToggle, onDelete }) {
                 onChange={() => onToggle(provider.id)}
                 className="w-5 h-5 rounded accent-blue-500 cursor-pointer"
               />
-              <span className={`text-xs font-bold uppercase tracking-wider ${provider.configured ? 'text-green-400' : 'text-slate-400'}`}>
+              <span className={`text-xs font-bold uppercase tracking-wider ${provider.configured ? 'text-green-400' : ''}`} style={!provider.configured ? { color: 'var(--text-tertiary)' } : {}}>
                 {provider.configured ? 'Enabled' : 'Disabled'}
               </span>
             </label>
@@ -126,12 +126,12 @@ export default function LLMProvidersPage() {
           <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
             LLM Providers
           </h1>
-          <p className="text-slate-400">Configure AI models for transcription, analysis, and voice synthesis</p>
+          <p style={{ color: 'var(--text-tertiary)' }}>Configure AI models for transcription, analysis, and voice synthesis</p>
         </div>
 
         <div className="flex items-center justify-between animate-slideInRight" style={{ animationDelay: '100ms' }}>
           <div>
-            <p className="text-sm text-slate-400">
+            <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>
               Integrate OpenAI, Anthropic, Deepgram, ElevenLabs, and other AI providers
             </p>
           </div>
@@ -142,7 +142,7 @@ export default function LLMProvidersPage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-4 border-b border-slate-600/50 overflow-x-auto pb-4 animate-fadeInUp" style={{ animationDelay: '150ms' }}>
+        <div className="flex gap-4 border-b overflow-x-auto pb-4 animate-fadeInUp" style={{ borderColor: 'var(--border-color)', animationDelay: '150ms' }}>
           {TABS.map((tab, idx) => (
             <button
               key={tab}
@@ -150,8 +150,9 @@ export default function LLMProvidersPage() {
               className={`px-4 py-3 font-medium text-sm border-b-2 transition-all duration-300 whitespace-nowrap ${
                 activeTab === tab
                   ? 'text-blue-300 border-blue-400 shadow-glow'
-                  : 'text-slate-400 border-transparent hover:text-slate-300'
+                  : 'border-transparent hover:text-blue-300'
               }`}
+              style={activeTab !== tab ? { color: 'var(--text-tertiary)' } : {}}
             >
               {tab}
             </button>
