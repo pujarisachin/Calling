@@ -113,9 +113,6 @@ export function Topbar({ pageTitle = 'Dashboard' }) {
           </div>
         </div>
       </header>
-
-      {/* Spacer for fixed header */}
-      <div className="h-16" />
     </>
   );
 }

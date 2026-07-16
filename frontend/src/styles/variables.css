@@ -122,6 +122,20 @@
   --size-button-height-sm: 2rem; /* 32px */
   --size-button-height-md: 2.5rem; /* 40px */
   --size-button-height-lg: 3rem; /* 48px */
+
+  /* ===== UNPREFIXED ALIASES ===== */
+  /* Many components reference these shorthand names directly; keep them in
+     sync with the --color-* scale above so theme switching works everywhere. */
+  --bg-primary: var(--color-bg-primary);
+  --bg-secondary: var(--color-bg-secondary);
+  --bg-tertiary: var(--color-bg-tertiary);
+  --card-bg: var(--color-surface-1);
+  --input-bg: var(--color-surface-2);
+  --border-color: var(--color-border-light);
+  --text-primary: var(--color-text-primary);
+  --text-secondary: var(--color-text-secondary);
+  --text-tertiary: var(--color-text-tertiary);
+  --shadow-color: rgba(0, 0, 0, 0.1);
 }
 
 /* ===== DARK MODE ===== */
@@ -153,6 +167,8 @@
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
     --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+
+    --shadow-color: rgba(0, 0, 0, 0.4);
   }
 }
 
@@ -182,6 +198,8 @@
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+
+  --shadow-color: rgba(0, 0, 0, 0.4);
 }
 
 /* ===== EXPLICIT LIGHT MODE (data-theme="light") ===== */
@@ -210,4 +228,6 @@
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+  --shadow-color: rgba(0, 0, 0, 0.1);
 }

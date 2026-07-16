@@ -283,7 +283,7 @@ function CallMonitor({ testId, onTestComplete, agentLanguage }) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 h-full flex flex-col">
       {/* Call Status Card */}
       <Card className="p-6 border border animate-scaleIn">
         <CardHeader>
@@ -319,15 +319,15 @@ function CallMonitor({ testId, onTestComplete, agentLanguage }) {
       </Card>
 
       {/* Live Transcript */}
-      <Card className="p-6 border border animate-fadeInUp" style={{ animationDelay: '100ms' }}>
+      <Card className="p-6 border border animate-fadeInUp flex-1 flex flex-col min-h-0" style={{ animationDelay: '100ms' }}>
         <CardHeader>
           <CardTitle className="text-gradient flex items-center gap-2">
             <span>Live Transcript</span>
             {!isFinished && <span className="inline-block w-2 h-2 bg-green-400 rounded-full animate-pulse" />}
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="bg-input-bg border rounded-lg p-4 h-64 overflow-y-auto space-y-3">
+        <CardContent className="flex-1 flex flex-col min-h-0">
+          <div className="bg-input-bg border rounded-lg p-4 flex-1 min-h-[22rem] overflow-y-auto space-y-3">
             {loading && (
               <>
                 <Skeleton className="h-4 w-3/4" />
@@ -339,23 +339,28 @@ function CallMonitor({ testId, onTestComplete, agentLanguage }) {
                 {isFinished ? 'No transcript available' : 'Waiting for speech...'}
               </p>
             ) : (
-              (result?.transcript || []).map((item, idx) => (
-                <div key={idx} className={`text-sm p-3 rounded-lg border ${
-                  item.speaker === 'Caller'
-                    ? 'bg-blue-500/10 border-blue-500/30'
-                    : 'bg-purple-500/10 border-purple-500/30'
-                }`}>
-                  <div className="flex items-start justify-between mb-1">
-                    <span className={`font-semibold ${item.speaker === 'Caller' ? 'text-blue-300' : 'text-purple-300'}`}>
-                      {item.speaker}:
-                    </span>
-                    <span className="text-xs text-text-secondary">
-                      {new Date(item.timestamp).toLocaleTimeString()}
-                    </span>
+              (result?.transcript || []).map((item, idx) => {
+                const isBot = /bot/i.test(item.speaker);
+                return (
+                  <div key={idx} className={`flex ${isBot ? 'justify-start' : 'justify-end'}`}>
+                    <div className={`text-sm p-3 rounded-lg border max-w-[80%] ${
+                      isBot
+                        ? 'bg-purple-500/10 border-purple-500/30'
+                        : 'bg-blue-500/10 border-blue-500/30'
+                    }`}>
+                      <div className="flex items-center justify-between gap-3 mb-1">
+                        <span className={`font-semibold ${isBot ? 'text-purple-300' : 'text-blue-300'}`}>
+                          {item.speaker}
+                        </span>
+                        <span className="text-xs text-text-secondary">
+                          {new Date(item.timestamp).toLocaleTimeString()}
+                        </span>
+                      </div>
+                      <span className="text-text-secondary">{item.text}</span>
+                    </div>
                   </div>
-                  <span className="text-text-secondary">{item.text}</span>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
         </CardContent>
@@ -594,7 +599,7 @@ export default function CallingPage() {
           </div>
 
           {/* Right Panel: Monitor or Empty */}
-          <div>
+          <div className="h-full">
             {currentTestId && !showResults ? (
               <CallMonitor testId={currentTestId} onTestComplete={handleTestComplete} agentLanguage={selectedLanguage} />
             ) : (

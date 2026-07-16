@@ -24,24 +24,25 @@ export default {
         error: '#EF4444',
         info: '#3B82F6',
 
-        // Neutral Scale
-        'bg-primary': '#FFFFFF',
-        'bg-secondary': '#F9FAFB',
-        'bg-tertiary': '#F3F4F6',
+        // Neutral Scale — mapped to CSS custom properties so these utilities
+        // stay in sync with the light/dark theme (see styles/variables.css).
+        'bg-primary': 'var(--color-bg-primary)',
+        'bg-secondary': 'var(--color-bg-secondary)',
+        'bg-tertiary': 'var(--color-bg-tertiary)',
 
-        'surface-1': '#FFFFFF',
-        'surface-2': '#F9FAFB',
-        'surface-3': '#F3F4F6',
+        'surface-1': 'var(--color-surface-1)',
+        'surface-2': 'var(--color-surface-2)',
+        'surface-3': 'var(--color-surface-3)',
 
-        'border-light': '#E5E7EB',
-        'border-medium': '#D1D5DB',
-        'border-dark': '#9CA3AF',
+        'border-light': 'var(--color-border-light)',
+        'border-medium': 'var(--color-border-medium)',
+        'border-dark': 'var(--color-border-dark)',
 
-        'text-primary': '#111827',
-        'text-secondary': '#6B7280',
-        'text-tertiary': '#9CA3AF',
-        'text-disabled': '#D1D5DB',
-        'text-inverse': '#FFFFFF',
+        'text-primary': 'var(--color-text-primary)',
+        'text-secondary': 'var(--color-text-secondary)',
+        'text-tertiary': 'var(--color-text-tertiary)',
+        'text-disabled': 'var(--color-text-disabled)',
+        'text-inverse': 'var(--color-text-inverse)',
       },
       spacing: {
         0: '0',
