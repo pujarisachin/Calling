@@ -1,42 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MainLayout } from '../../components/shell/MainLayout';
 import { Card, CardHeader, CardTitle, CardContent } from '../../components/common/Card';
 import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
-import { Badge } from '../../components/common/Badge';
 import { Modal } from '../../components/common/Modal';
 import { useNotifications } from '../../hooks/useNotifications';
-import { Brain, Plus, Copy, Check } from 'lucide-react';
+import { listAIProviders, saveAIProvider, toggleAIProvider, deleteAIProvider } from '../../api';
+import { Pencil, Trash2 } from 'lucide-react';
 
 const TABS = ['LLM Models', 'STT Models', 'TTS Models'];
 
-const SAMPLE_LLMS = {
-  'LLM Models': [
-    { id: '1', name: 'OpenAI', model: 'gpt-4', configured: true },
-    { id: '2', name: 'Anthropic', model: 'claude-3', configured: false },
-  ],
-  'STT Models': [
-    { id: '3', name: 'Deepgram', model: 'nova-2', configured: true },
-    { id: '4', name: 'Whisper', model: 'base', configured: false },
-  ],
-  'TTS Models': [
-    { id: '5', name: 'ElevenLabs', model: 'multilingual-v2', configured: true },
-    { id: '6', name: 'Google', model: 'neural2-en-US-C', configured: false },
-  ],
-};
+function parseErrorDetail(err) {
+  try {
+    const parsed = JSON.parse(err.message);
+    return parsed.detail || err.message;
+  } catch {
+    return err.message;
+  }
+}
 
-function ProviderCard({ provider, onCopy, onToggle, onDelete }) {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(provider.id);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
+function ProviderCard({ provider, onEdit, onToggle, onDelete, toggling }) {
   return (
     <Card className="group p-6 border hover:border-blue-500/50 hover:shadow-lg transition-all duration-300 hover:scale-105 animate-fadeInUp overflow-hidden relative" style={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)' }}>
-      {/* Gradient background effect */}
       <div className="absolute inset-0 bg-gradient-to-br from-cyan-500 via-blue-500 to-purple-500 opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-2xl" />
 
       <div className="relative">
@@ -49,12 +34,13 @@ function ProviderCard({ provider, onCopy, onToggle, onDelete }) {
             <label className="flex items-center gap-2 cursor-pointer shrink-0">
               <input
                 type="checkbox"
-                checked={provider.configured}
-                onChange={() => onToggle(provider.id)}
+                checked={provider.enabled}
+                onChange={() => onToggle(provider)}
+                disabled={toggling || !provider.api_key_set}
                 className="w-5 h-5 rounded accent-blue-500 cursor-pointer"
               />
-              <span className={`text-xs font-bold uppercase tracking-wider ${provider.configured ? 'text-green-400' : ''}`} style={!provider.configured ? { color: 'var(--text-tertiary)' } : {}}>
-                {provider.configured ? 'Enabled' : 'Disabled'}
+              <span className={`text-xs font-bold uppercase tracking-wider ${provider.enabled ? 'text-green-400' : ''}`} style={!provider.enabled ? { color: 'var(--text-tertiary)' } : {}}>
+                {provider.enabled ? 'Enabled' : 'Disabled'}
               </span>
             </label>
           </div>
@@ -64,9 +50,9 @@ function ProviderCard({ provider, onCopy, onToggle, onDelete }) {
             <Input
               label="API Key"
               type="password"
-              value="••••••••••••••••"
+              value={provider.api_key_set ? '••••••••••••••••' : ''}
               disabled
-              placeholder="API key (masked)"
+              placeholder={provider.api_key_set ? '' : 'Not configured'}
             />
 
             <div className="flex gap-2 pt-2">
@@ -74,18 +60,19 @@ function ProviderCard({ provider, onCopy, onToggle, onDelete }) {
                 variant="secondary"
                 size="sm"
                 fullWidth
-                onClick={handleCopy}
-                className={`${copied ? 'bg-green-500/20 text-green-300' : ''} shadow-md`}
+                onClick={() => onEdit(provider)}
+                className="shadow-md"
               >
-                {copied ? <Check size={16} /> : <Copy size={16} />}
-                {copied ? 'Copied' : 'Copy Key'}
+                <Pencil size={16} />
+                {provider.api_key_set ? 'Update Key' : 'Add Key'}
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => onDelete(provider.id)}
+                onClick={() => onDelete(provider)}
+                disabled={!provider.api_key_set}
               >
-                Delete
+                <Trash2 size={16} />
               </Button>
             </div>
           </div>
@@ -97,31 +84,72 @@ function ProviderCard({ provider, onCopy, onToggle, onDelete }) {
 
 export default function LLMProvidersPage() {
   const [activeTab, setActiveTab] = useState('LLM Models');
-  const [providers, setProviders] = useState(SAMPLE_LLMS);
+  const [providers, setProviders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [togglingId, setTogglingId] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const { success } = useNotifications();
+  const [editingProvider, setEditingProvider] = useState(null);
+  const [formData, setFormData] = useState({ api_key: '', model: '' });
+  const { success, error } = useNotifications();
 
-  const handleToggle = (id) => {
-    setProviders(prev => ({
-      ...prev,
-      [activeTab]: prev[activeTab].map(p =>
-        p.id === id ? { ...p, configured: !p.configured } : p
-      ),
-    }));
+  const loadProviders = () => {
+    setLoading(true);
+    return listAIProviders()
+      .then((data) => setProviders(data.providers || []))
+      .catch((err) => error(parseErrorDetail(err)))
+      .finally(() => setLoading(false));
   };
 
-  const handleDelete = (id) => {
-    setProviders(prev => ({
-      ...prev,
-      [activeTab]: prev[activeTab].filter(p => p.id !== id),
-    }));
-    success('Provider removed');
+  useEffect(() => {
+    loadProviders();
+  }, []);
+
+  const handleEdit = (provider) => {
+    setFormData({ api_key: '', model: provider.model || '' });
+    setEditingProvider(provider);
+    setShowModal(true);
   };
+
+  const handleSave = () => {
+    if (!formData.api_key && !editingProvider.api_key_set) {
+      error('Please provide an API key');
+      return;
+    }
+    saveAIProvider(editingProvider.id, {
+      api_key: formData.api_key,
+      model: formData.model,
+      enabled: editingProvider.enabled,
+    })
+      .then(() => {
+        success(`${editingProvider.name} saved`);
+        setShowModal(false);
+        loadProviders();
+      })
+      .catch((err) => error(parseErrorDetail(err)));
+  };
+
+  const handleToggle = (provider) => {
+    setTogglingId(provider.id);
+    toggleAIProvider(provider.id)
+      .then(() => loadProviders())
+      .catch((err) => error(parseErrorDetail(err)))
+      .finally(() => setTogglingId(null));
+  };
+
+  const handleDelete = (provider) => {
+    deleteAIProvider(provider.id)
+      .then(() => {
+        success(`${provider.name} credentials removed`);
+        loadProviders();
+      })
+      .catch((err) => error(parseErrorDetail(err)));
+  };
+
+  const visibleProviders = providers.filter((p) => p.category === activeTab);
 
   return (
     <MainLayout pageTitle="LLM Providers">
       <div className="space-y-8 pb-8">
-        {/* Header */}
         <div className="space-y-2 animate-fadeInUp">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
             LLM Providers
@@ -129,21 +157,13 @@ export default function LLMProvidersPage() {
           <p style={{ color: 'var(--text-tertiary)' }}>Configure AI models for transcription, analysis, and voice synthesis</p>
         </div>
 
-        <div className="flex items-center justify-between animate-slideInRight" style={{ animationDelay: '100ms' }}>
-          <div>
-            <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>
-              Integrate OpenAI, Anthropic, Deepgram, ElevenLabs, and other AI providers
-            </p>
-          </div>
-          <Button variant="primary" onClick={() => setShowModal(true)} className="shadow-glow hover:shadow-lg gap-2">
-            <Plus size={18} />
-            Add Provider
-          </Button>
-        </div>
+        <p className="text-sm animate-slideInRight" style={{ color: 'var(--text-tertiary)', animationDelay: '100ms' }}>
+          Integrate OpenAI, Anthropic, Deepgram, ElevenLabs, and other AI providers
+        </p>
 
         {/* Tabs */}
         <div className="flex gap-4 border-b overflow-x-auto pb-4 animate-fadeInUp" style={{ borderColor: 'var(--border-color)', animationDelay: '150ms' }}>
-          {TABS.map((tab, idx) => (
+          {TABS.map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -160,52 +180,54 @@ export default function LLMProvidersPage() {
         </div>
 
         {/* Provider Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fadeInUp" style={{ animationDelay: '200ms' }}>
-          {providers[activeTab]?.map((provider, idx) => (
-            <div key={provider.id} style={{ animationDelay: `${200 + idx * 50}ms` }}>
-              <ProviderCard
-                provider={provider}
-                onToggle={handleToggle}
-                onDelete={handleDelete}
-              />
-            </div>
-          ))}
-        </div>
+        {loading ? (
+          <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>Loading providers...</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fadeInUp" style={{ animationDelay: '200ms' }}>
+            {visibleProviders.map((provider, idx) => (
+              <div key={provider.id} style={{ animationDelay: `${200 + idx * 50}ms` }}>
+                <ProviderCard
+                  provider={provider}
+                  onEdit={handleEdit}
+                  onToggle={handleToggle}
+                  onDelete={handleDelete}
+                  toggling={togglingId === provider.id}
+                />
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Modal */}
         <Modal
           isOpen={showModal}
           onClose={() => setShowModal(false)}
-          title={`Add ${activeTab.replace(' Models', '')}`}
+          title={editingProvider ? `Configure ${editingProvider.name}` : 'Configure Provider'}
           size="md"
           footer={
             <>
               <Button variant="secondary" onClick={() => setShowModal(false)}>
                 Cancel
               </Button>
-              <Button variant="primary" onClick={() => { success('Provider added'); setShowModal(false); }}>
-                Add Provider
+              <Button variant="primary" onClick={handleSave} className="shadow-glow">
+                Save
               </Button>
             </>
           }
         >
           <div className="space-y-4">
             <Input
-              label="Provider Name"
-              placeholder={activeTab === 'LLM Models' ? 'OpenAI, Anthropic, etc.' : ''}
-            />
-            <Input
               label="Model ID"
+              value={formData.model}
+              onChange={(e) => setFormData({ ...formData, model: e.target.value })}
               placeholder="gpt-4, claude-3, etc."
             />
             <Input
               label="API Key"
               type="password"
-              placeholder="Your API key"
-            />
-            <Input
-              label="Endpoint (Optional)"
-              placeholder="Custom API endpoint"
+              value={formData.api_key}
+              onChange={(e) => setFormData({ ...formData, api_key: e.target.value })}
+              placeholder={editingProvider?.api_key_set ? 'Leave blank to keep current key' : 'Your API key'}
             />
           </div>
         </Modal>

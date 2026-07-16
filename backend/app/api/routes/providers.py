@@ -38,6 +38,20 @@ CARRIERS = {
 }
 
 
+class AIProviderCredentialRequest(BaseModel):
+    api_key: str = ""
+    model: str = ""
+    enabled: bool = True
+
+
+AI_PROVIDERS = {
+    "openai": {"name": "OpenAI", "category": "LLM Models", "default_model": "gpt-4.1-mini"},
+    "anthropic": {"name": "Anthropic", "category": "LLM Models", "default_model": "claude-3"},
+    "deepgram": {"name": "Deepgram", "category": "STT Models", "default_model": "nova-2"},
+    "elevenlabs": {"name": "ElevenLabs", "category": "TTS Models", "default_model": "multilingual-v2"},
+}
+
+
 def _mask(value: str | None) -> str | None:
     if not value:
         return None
@@ -168,3 +182,63 @@ def test_carrier_connection(carrier_id: str, db: Session = Depends(get_db)) -> d
             raise HTTPException(status_code=400, detail=f"Twilio connection failed: {exc}") from exc
 
     return {"status": "connected"}
+
+
+def _ai_provider_key(provider_id: str) -> str:
+    if provider_id not in AI_PROVIDERS:
+        raise HTTPException(status_code=404, detail="Unknown AI provider")
+    return provider_id
+
+
+@router.get("/ai")
+def list_ai_providers(db: Session = Depends(get_db)) -> dict:
+    settings = get_settings()
+    providers = []
+    for provider_id, meta in AI_PROVIDERS.items():
+        row = CredentialRepository.get(db, provider_id)
+        config = (row.config if row else {}) or {}
+        default_key = settings.openai_api_key if provider_id == "openai" else None
+        configured = bool(config.get("api_key") or default_key)
+        providers.append(
+            {
+                "id": provider_id,
+                "name": meta["name"],
+                "category": meta["category"],
+                "model": config.get("model") or meta["default_model"],
+                "api_key_set": configured,
+                "enabled": config.get("enabled", True) if configured else False,
+                "updated_at": row.updated_at.isoformat() if row else None,
+            }
+        )
+    return {"providers": providers}
+
+
+@router.put("/ai/{provider_id}")
+def update_ai_provider(provider_id: str, payload: AIProviderCredentialRequest, db: Session = Depends(get_db)) -> dict:
+    provider_id = _ai_provider_key(provider_id)
+    existing = CredentialRepository.get(db, provider_id)
+    config = dict(existing.config) if existing and existing.config else {}
+    if payload.api_key:
+        config["api_key"] = payload.api_key
+    if payload.model:
+        config["model"] = payload.model
+    config["enabled"] = payload.enabled
+    CredentialRepository.upsert(db, provider_id, config)
+    return {"status": "saved"}
+
+
+@router.patch("/ai/{provider_id}/toggle")
+def toggle_ai_provider(provider_id: str, db: Session = Depends(get_db)) -> dict:
+    provider_id = _ai_provider_key(provider_id)
+    existing = CredentialRepository.get(db, provider_id)
+    config = dict(existing.config) if existing and existing.config else {}
+    config["enabled"] = not config.get("enabled", True)
+    CredentialRepository.upsert(db, provider_id, config)
+    return {"status": "saved", "enabled": config["enabled"]}
+
+
+@router.delete("/ai/{provider_id}")
+def delete_ai_provider(provider_id: str, db: Session = Depends(get_db)) -> dict:
+    provider_id = _ai_provider_key(provider_id)
+    CredentialRepository.delete(db, provider_id)
+    return {"status": "cleared"}

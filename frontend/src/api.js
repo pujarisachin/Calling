@@ -240,6 +240,36 @@ export async function testCarrierConnection(carrierId) {
   return post(`/api/providers/carriers/${carrierId}/test-connection`, {});
 }
 
+// ==================== AI Provider Endpoints ====================
+
+/**
+ * List all AI (LLM/STT/TTS) providers with status from the database
+ */
+export async function listAIProviders() {
+  return get('/api/providers/ai');
+}
+
+/**
+ * Save credentials/model for an AI provider
+ */
+export async function saveAIProvider(providerId, payload) {
+  return put(`/api/providers/ai/${providerId}`, payload);
+}
+
+/**
+ * Toggle an AI provider's enabled state
+ */
+export async function toggleAIProvider(providerId) {
+  return patch(`/api/providers/ai/${providerId}/toggle`, {});
+}
+
+/**
+ * Remove saved credentials for an AI provider
+ */
+export async function deleteAIProvider(providerId) {
+  return del(`/api/providers/ai/${providerId}`);
+}
+
 // ==================== Analytics Endpoints ====================
 
 /**
