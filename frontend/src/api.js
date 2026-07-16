@@ -210,6 +210,36 @@ export async function updateProviderCredentials(providerId, payload) {
   return put(`/api/providers/${providerId}/credentials`, payload);
 }
 
+// ==================== Carrier Endpoints ====================
+
+/**
+ * List all carriers with connection status from the database
+ */
+export async function listCarriers() {
+  return get('/api/providers/carriers');
+}
+
+/**
+ * Save credentials for a carrier
+ */
+export async function saveCarrierCredentials(carrierId, payload) {
+  return put(`/api/providers/carriers/${carrierId}`, payload);
+}
+
+/**
+ * Remove saved credentials for a carrier
+ */
+export async function deleteCarrierCredentials(carrierId) {
+  return del(`/api/providers/carriers/${carrierId}`);
+}
+
+/**
+ * Test a carrier's connection using its saved credentials
+ */
+export async function testCarrierConnection(carrierId) {
+  return post(`/api/providers/carriers/${carrierId}/test-connection`, {});
+}
+
 // ==================== Analytics Endpoints ====================
 
 /**

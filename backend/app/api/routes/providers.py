@@ -24,6 +24,20 @@ class OpenAICredentialRequest(BaseModel):
     model: str | None = None
 
 
+class CarrierCredentialRequest(BaseModel):
+    account_sid: str = ""
+    auth_token: str = ""
+    phone_number: str = ""
+
+
+CARRIERS = {
+    "twilio": "Twilio",
+    "plivo": "Plivo",
+    "vonage": "Vonage",
+    "nice_cxone": "Nice CXone",
+}
+
+
 def _mask(value: str | None) -> str | None:
     if not value:
         return None
@@ -89,4 +103,68 @@ def test_twilio_connection(payload: TwilioCredentialRequest) -> dict:
         client.api.accounts(payload.account_sid).fetch()
     except TwilioException as exc:
         raise HTTPException(status_code=400, detail=f"Twilio connection failed: {exc}") from exc
+    return {"status": "connected"}
+
+
+def _carrier_key(carrier_id: str) -> str:
+    if carrier_id not in CARRIERS:
+        raise HTTPException(status_code=404, detail="Unknown carrier")
+    return carrier_id
+
+
+@router.get("/carriers")
+def list_carriers(db: Session = Depends(get_db)) -> dict:
+    carriers = []
+    for carrier_id, name in CARRIERS.items():
+        row = CredentialRepository.get(db, carrier_id)
+        config = (row.config if row else {}) or {}
+        configured = bool(config.get("account_sid") and config.get("auth_token"))
+        carriers.append(
+            {
+                "id": carrier_id,
+                "name": name,
+                "status": "Connected" if configured else "Disconnected",
+                "account_sid": _mask(config.get("account_sid")),
+                "phone_number": config.get("phone_number"),
+                "updated_at": row.updated_at.isoformat() if row else None,
+            }
+        )
+    return {"carriers": carriers}
+
+
+@router.put("/carriers/{carrier_id}")
+def update_carrier(carrier_id: str, payload: CarrierCredentialRequest, db: Session = Depends(get_db)) -> dict:
+    carrier_id = _carrier_key(carrier_id)
+    CredentialRepository.upsert(db, carrier_id, payload.model_dump())
+    return {"status": "saved"}
+
+
+@router.delete("/carriers/{carrier_id}")
+def delete_carrier(carrier_id: str, db: Session = Depends(get_db)) -> dict:
+    carrier_id = _carrier_key(carrier_id)
+    CredentialRepository.delete(db, carrier_id)
+    return {"status": "cleared"}
+
+
+@router.post("/carriers/{carrier_id}/test-connection")
+def test_carrier_connection(carrier_id: str, db: Session = Depends(get_db)) -> dict:
+    carrier_id = _carrier_key(carrier_id)
+    row = CredentialRepository.get(db, carrier_id)
+    config = (row.config if row else {}) or {}
+    account_sid = config.get("account_sid")
+    auth_token = config.get("auth_token")
+    phone_number = config.get("phone_number")
+
+    if not account_sid or not auth_token:
+        raise HTTPException(status_code=400, detail=f"{CARRIERS[carrier_id]} credentials are incomplete. Configure Account SID and Auth Token first.")
+    if not phone_number:
+        raise HTTPException(status_code=400, detail=f"Phone number is required for {CARRIERS[carrier_id]}")
+
+    if carrier_id == "twilio":
+        try:
+            client = Client(account_sid, auth_token)
+            client.api.accounts(account_sid).fetch()
+        except TwilioException as exc:
+            raise HTTPException(status_code=400, detail=f"Twilio connection failed: {exc}") from exc
+
     return {"status": "connected"}

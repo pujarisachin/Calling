@@ -3,7 +3,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard/Dashboard';
 import CallingPage from './pages/Calling/CallingPage';
-import SIPProvidersPage from './pages/Providers/SIPProvidersPage';
+import CarriersPage from './pages/Providers/CarriersPage';
 import LLMProvidersPage from './pages/Providers/LLMProvidersPage';
 import ConversationIntelligencePage from './pages/ConversationIntelligence/ConversationIntelligencePage';
 import DocumentationPage from './pages/Documentation/DocumentationPage';
@@ -28,8 +28,8 @@ export const router = createBrowserRouter([
     element: <CallingPage />,
   },
   {
-    path: '/sip-providers',
-    element: <SIPProvidersPage />,
+    path: '/carriers',
+    element: <CarriersPage />,
   },
   {
     path: '/llm-providers',

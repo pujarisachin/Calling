@@ -18,7 +18,7 @@ const NAV_ITEMS = [
   { icon: Home, label: 'Landing', path: '/' },
   { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
   { icon: Phone, label: 'Calling', path: '/calling' },
-  { icon: Wifi, label: 'SIP Providers', path: '/sip-providers' },
+  { icon: Wifi, label: 'Carriers', path: '/carriers' },
   { icon: Brain, label: 'LLM Providers', path: '/llm-providers' },
   { icon: MessageCircle, label: 'Intelligence', path: '/intelligence' },
   { icon: FileText, label: 'Documentation', path: '/docs' },
