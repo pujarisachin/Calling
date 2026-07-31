@@ -23,6 +23,7 @@ class TestCase(Base):
     additional_instructions: Mapped[str | None] = mapped_column(Text, nullable=True)
     test_data: Mapped[str | None] = mapped_column(Text, nullable=True)
     persona_instructions: Mapped[str | None] = mapped_column(Text, nullable=True)
+    agent_language: Mapped[str] = mapped_column(String(16), nullable=False, default="en-US")
     enable_recording: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
 

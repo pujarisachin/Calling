@@ -54,6 +54,7 @@ def create_test(
         additional_instructions=payload.additional_instructions,
         test_data=payload.test_data,
         persona_instructions=payload.persona_instructions,
+        agent_language=payload.agent_language,
         enable_recording=payload.enable_recording,
     )
 
@@ -171,6 +172,7 @@ def get_test_result(test_id: str, db: Session = Depends(get_db)) -> TestResultRe
         additional_instructions=test_case.additional_instructions,
         test_data=test_case.test_data,
         persona_instructions=test_case.persona_instructions,
+        agent_language=test_case.agent_language,
         enable_recording=test_case.enable_recording,
         created_at=test_case.created_at,
         call=CallInfoResponse(

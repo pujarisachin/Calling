@@ -13,6 +13,7 @@ class CreateTestRequest(BaseModel):
     additional_instructions: str | None = None
     test_data: str | None = None
     persona_instructions: str | None = None
+    agent_language: str = "en-US"
     enable_recording: bool = False
 
 
@@ -83,6 +84,7 @@ class TestResultResponse(BaseModel):
     additional_instructions: str | None
     test_data: str | None
     persona_instructions: str | None
+    agent_language: str
     enable_recording: bool
     created_at: datetime
     call: CallInfoResponse | None

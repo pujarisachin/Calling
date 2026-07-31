@@ -34,6 +34,7 @@ def _add_missing_columns() -> None:
         "test_cases": {
             "test_data": "TEXT",
             "persona_instructions": "TEXT",
+            "agent_language": "VARCHAR(16) NOT NULL DEFAULT 'en-US'",
             "enable_recording": "BOOLEAN NOT NULL DEFAULT 0",
         },
         "call_sessions": {

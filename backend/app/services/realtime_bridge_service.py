@@ -17,6 +17,33 @@ from app.services.twilio_service import TwilioService
 
 logger = logging.getLogger(__name__)
 
+LANGUAGE_NAMES = {
+    "en-US": "English (US)",
+    "en-GB": "English (UK)",
+    "en-IN": "English (India)",
+    "en-AU": "English (Australia)",
+    "es-ES": "Spanish (Spain / Castilian)",
+    "es-MX": "Spanish (Mexico)",
+    "es-AR": "Spanish (Argentina / Rioplatense)",
+    "fr-FR": "French (France)",
+    "fr-CA": "French (Canada / Québécois)",
+    "de-DE": "German (Germany)",
+    "de-AT": "German (Austria)",
+    "it-IT": "Italian (Italy)",
+    "pt-BR": "Portuguese (Brazil)",
+    "pt-PT": "Portuguese (Portugal)",
+    "ja-JP": "Japanese (Japan)",
+    "zh-CN": "Mandarin (China, Simplified)",
+    "zh-TW": "Mandarin (Taiwan, Traditional)",
+    "ko-KR": "Korean (Korea)",
+    "ru-RU": "Russian (Russia)",
+    "ar-SA": "Arabic (Saudi Arabia, Modern Standard)",
+    "ar-AE": "Arabic (UAE, Gulf)",
+    "hi-IN": "Hindi (India)",
+    "th-TH": "Thai (Thailand)",
+    "nl-NL": "Dutch (Netherlands)",
+}
+
 
 @dataclass
 class RealtimeContext:
@@ -272,7 +299,14 @@ class RealtimeBridgeService:
             if not test_case:
                 return None
 
+            language_name = LANGUAGE_NAMES.get(test_case.agent_language, test_case.agent_language)
+            language_directive = (
+                f"You must speak ONLY in {language_name} for this entire call — every word, including your "
+                f"opening greeting. Do not switch to English or any other language, even if the other party does. "
+            )
+
             instructions = (
+                language_directive +
                 "You are a real customer calling a company's automated voice assistant on the phone. "
                 "You are NOT a tester, an AI, or a demo — never say you are an AI, testing, or evaluating "
                 "anything, even if asked directly; stay in character as a genuine caller. "

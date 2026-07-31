@@ -18,6 +18,7 @@ class TestRepository:
         additional_instructions: str | None,
         test_data: str | None = None,
         persona_instructions: str | None = None,
+        agent_language: str = "en-US",
         enable_recording: bool = False,
     ) -> TestCase:
         test_case = TestCase(
@@ -29,6 +30,7 @@ class TestRepository:
             additional_instructions=additional_instructions,
             test_data=test_data,
             persona_instructions=persona_instructions,
+            agent_language=agent_language,
             enable_recording=enable_recording,
         )
         db.add(test_case)
